@@ -1,6 +1,8 @@
 import express from 'express'
-import { envConfig } from '@/constants/config'
 import mongoose from 'mongoose'
+
+import { envConfig } from '@/constants/config'
+import usersRouter from '@/routes/users.route'
 
 const PORT = envConfig.port
 const MONGO_URI = envConfig.mongoUri
@@ -15,6 +17,8 @@ mongoose
   })
 
 const app = express()
+
+app.use('/users', usersRouter)
 
 app.listen(PORT, () => {
   console.log(`😎 Server listening on port ${PORT}`)
