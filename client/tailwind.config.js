@@ -6,6 +6,13 @@ import flattenColorPalette from 'tailwindcss/lib/util/flattenColorPalette'
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    container: {
+      center: true,
+      padding: '1rem',
+      screens: {
+        '2xl': `calc(theme('maxWidth.6xl') + 1rem * 2)`,
+      },
+    },
     extend: {},
   },
   plugins: [addVariablesForColors],
