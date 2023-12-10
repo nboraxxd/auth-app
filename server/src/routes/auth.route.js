@@ -1,5 +1,7 @@
 import { Router } from 'express'
-import { authController } from '@/controllers/auth.controller'
+
+import { signupValidator } from '@/middlewares/auth.middlewares'
+import { signUpController } from '@/controllers/auth.controller'
 
 const authRouter = Router()
 
@@ -35,6 +37,6 @@ const authRouter = Router()
  *    '422':
  *     description: Invalid value or missing field
  */
-authRouter.post('/signup', authController)
+authRouter.post('/signup', signupValidator, signUpController)
 
 export default authRouter

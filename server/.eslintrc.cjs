@@ -17,7 +17,7 @@ module.exports = {
   },
   plugins: ['prettier'],
   rules: {
-    'no-unused-vars': 'warn',
+    'no-unused-vars': ['warn', { varsIgnorePattern: '^_', argsIgnorePattern: '^_' }],
     'prettier/prettier': [
       'warn',
       {
