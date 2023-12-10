@@ -7,8 +7,8 @@ import { PrivateRoute } from '@/routes/PrivateRoute'
 import { PageNotFound } from '@/pages/PageNotFound'
 import { Homepage } from '@/pages/Homepage'
 import { About } from '@/pages/About'
-import { Signup } from '@/pages/Signup'
-import { Signin } from '@/pages/Signin'
+import { SignUp } from '@/pages/SignUp'
+import { SignIn } from '@/pages/SignIn'
 import { Profile } from '@/pages/Profile'
 
 export const router = createBrowserRouter([
@@ -29,12 +29,12 @@ export const router = createBrowserRouter([
         element: <AuthRoute />,
         children: [
           {
-            path: PATH.SIGNUP,
-            element: <Signup />,
+            path: PATH.SIGN_UP,
+            element: <SignUp />,
           },
           {
-            path: PATH.SIGNIN,
-            element: <Signin />,
+            path: PATH.SIGN_IN,
+            element: <SignIn />,
           },
         ],
       },

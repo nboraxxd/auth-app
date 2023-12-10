@@ -16,7 +16,7 @@ export default function Header() {
               <Link to={PATH.ABOUT}>About</Link>
             </li>
             <li>
-              <Link to={PATH.SIGNIN}>Sign In</Link>
+              <Link to={PATH.SIGN_IN}>Sign In</Link>
             </li>
           </ul>
         </nav>
