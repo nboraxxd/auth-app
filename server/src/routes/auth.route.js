@@ -7,15 +7,15 @@ const authRouter = Router()
 
 /**
  * @swagger
- * /users/signup:
+ * /auth/sign-up:
  *  post:
  *   tags:
- *    - users
+ *    - auth
  *   summary: Signup new user
- *   description: ''
- *   operationId: signup
+ *   description: 'Create a new user having username, email and password.'
+ *   operationId: sign-up
  *   requestBody:
- *    description: email and password to create new user
+ *    description: created user object
  *    required: true
  *    content:
  *     application/json:

@@ -58,3 +58,28 @@ export const signupValidator = validate(
     ['body']
   )
 )
+
+export const signinValidator = validate(
+  checkSchema({
+    email: {
+      notEmpty: { errorMessage: EMAIL_MESSAGES.IS_REQUIRED },
+      isString: { errorMessage: EMAIL_MESSAGES.MUST_BE_A_STRING },
+      trim: true,
+      isEmail: { errorMessage: EMAIL_MESSAGES.INVALID_EMAIL },
+    },
+    password: {
+      notEmpty: { errorMessage: PASSWORD_MESSAGES.IS_REQUIRED },
+      isString: { errorMessage: PASSWORD_MESSAGES.MUST_BE_A_STRING },
+      isLength: { options: { min: 6, max: 86 }, errorMessage: PASSWORD_MESSAGES.LENGTH },
+      isStrongPassword: {
+        options: {
+          minLowercase: 1,
+          minUppercase: 1,
+          minNumbers: 1,
+          minSymbols: 1,
+        },
+        errorMessage: PASSWORD_MESSAGES.IS_STRONG,
+      },
+    },
+  })
+)

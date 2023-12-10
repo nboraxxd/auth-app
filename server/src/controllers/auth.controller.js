@@ -1,6 +1,8 @@
 import HTTP_STATUS from '@/constants/httpStatus'
 import { SIGNUP_MESSAGES } from '@/constants/message'
 import User from '@/models/auth.model'
+import RefreshToken from '@/models/refreshToken.model'
+import authService from '@/services/auth.service'
 
 export async function signUpController(req, res, next) {
   const { username, email, password, confirm_password } = req.body
@@ -13,7 +15,24 @@ export async function signUpController(req, res, next) {
       confirm_password,
     })
 
-    res.status(HTTP_STATUS.CREATED).json({ message: SIGNUP_MESSAGES.SUCCESS, result })
+    const [access_token, refresh_token] = await authService.signAccessAndRefreshToken(result._id.toString())
+
+    const { iat, exp } = await authService.decodeRefreshToken(refresh_token)
+
+    await RefreshToken.create({
+      token: refresh_token,
+      user_id: result._id,
+      iat: new Date(iat * 1000),
+      exp: new Date(exp * 1000),
+    })
+
+    res.status(HTTP_STATUS.CREATED).json({
+      message: SIGNUP_MESSAGES.SUCCESS,
+      result: {
+        access_token,
+        refresh_token,
+      },
+    })
   } catch (error) {
     next(error)
   }
