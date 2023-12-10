@@ -2,18 +2,19 @@ import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { twMerge } from 'tailwind-merge'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useSignup } from '@/lib/tanstack-query/queriesAndMutations'
 
 import { PATH } from '@/constants/path'
+import { isAxiosUnprocessableEntityError } from '@/utils/common'
+import { signUpSchema } from '@/lib/validation'
 import { AuthInput } from '@/components/AuthInput'
 import { Button } from '@/components/Button'
-import { signUpSchema } from '@/lib/validation'
-import { useSignup } from '@/lib/tanstack-query/queriesAndMutations'
 
 export default function SignUp() {
   const {
     register,
     handleSubmit,
-    // setError,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(signUpSchema),
@@ -33,7 +34,20 @@ export default function SignUp() {
         console.log('🔥 ~ onSubmit ~ onSuccess', res)
       },
       onError: (error) => {
-        console.log('🔥 ~ onSubmit ~ onError ~ error:', error)
+        if (isAxiosUnprocessableEntityError(error)) {
+          const formError = error.response.data.errors
+
+          if (formError) {
+            // Dùng Object.keys để lấy ra các key của formError object
+            // Sau đó dùng forEach để lặp qua từng key và set error cho input tương ứng
+            Object.keys(formError).forEach((key) => {
+              setError(key, {
+                message: formError[key].msg,
+                type: 'server',
+              })
+            })
+          }
+        }
       },
     })
   }
