@@ -1,20 +1,70 @@
 import { Link } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
 import { twMerge } from 'tailwind-merge'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 import { PATH } from '@/constants/path'
 import { AuthInput } from '@/components/AuthInput'
 import { Button } from '@/components/Button'
+import { signUpSchema } from '@/utils/rules'
 
 export default function SignUp() {
+  const {
+    register,
+    handleSubmit,
+    // setError,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      confirm_password: '',
+    },
+  })
+
+  function onSubmit(data) {
+    console.log('🔥 ~ onSubmit ~ data:', data)
+  }
+
   return (
     <section className={twMerge('container max-w-lg')}>
       <h1 className="my-7 text-center text-3xl font-semibold">Sign Up</h1>
 
-      <form className="flex flex-col">
-        <AuthInput placeholder="Username" />
-        <AuthInput placeholder="Email" />
-        <AuthInput placeholder="Password" />
-        <AuthInput placeholder="Confirm password" />
+      <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <AuthInput
+          type="username"
+          placeholder="Username"
+          autoComplete="username"
+          name="username"
+          register={register}
+          errorMessage={errors.username?.message}
+        />
+        <AuthInput
+          type="email"
+          placeholder="Email"
+          autoComplete="email"
+          name="email"
+          register={register}
+          errorMessage={errors.email?.message}
+        />
+        <AuthInput
+          type="password"
+          placeholder="Password"
+          autoComplete="new-password"
+          name="password"
+          register={register}
+          errorMessage={errors.password?.message}
+        />
+        <AuthInput
+          type="password"
+          placeholder="Confirm password"
+          autoComplete="new-password"
+          name="confirm_password"
+          register={register}
+          errorMessage={errors.confirm_password?.message}
+        />
 
         <Button className="mt-1">Sign up</Button>
       </form>
