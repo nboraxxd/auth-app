@@ -37,6 +37,6 @@ const authRouter = Router()
  *    '422':
  *     description: Invalid value or missing field
  */
-authRouter.post('/signup', signupValidator, signUpController)
+authRouter.post('/sign-up', signupValidator, signUpController)
 
 export default authRouter

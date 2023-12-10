@@ -2,6 +2,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJsdoc from 'swagger-jsdoc'
+import cors from 'cors'
 
 import { envConfig } from '@/constants/config'
 import authRouter from '@/routes/auth.route'
@@ -44,6 +45,9 @@ mongoose
   })
 
 const app = express()
+
+// Quy định cors
+app.use(cors())
 
 // parse json của client gởi lên, chuyển thành dạnh object để xử lý
 app.use(express.json())

@@ -6,7 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { PATH } from '@/constants/path'
 import { AuthInput } from '@/components/AuthInput'
 import { Button } from '@/components/Button'
-import { signUpSchema } from '@/utils/rules'
+import { signUpSchema } from '@/lib/validation'
+import { useSignup } from '@/lib/tanstack-query/queriesAndMutations'
 
 export default function SignUp() {
   const {
@@ -24,8 +25,17 @@ export default function SignUp() {
     },
   })
 
+  const { mutate, isPending } = useSignup()
+
   function onSubmit(data) {
-    console.log('🔥 ~ onSubmit ~ data:', data)
+    mutate(data, {
+      onSuccess: (res) => {
+        console.log('🔥 ~ onSubmit ~ onSuccess', res)
+      },
+      onError: (error) => {
+        console.log('🔥 ~ onSubmit ~ onError ~ error:', error)
+      },
+    })
   }
 
   return (
@@ -66,7 +76,9 @@ export default function SignUp() {
           errorMessage={errors.confirm_password?.message}
         />
 
-        <Button className="mt-1">Sign up</Button>
+        <Button className="mt-1" isPending={isPending}>
+          Sign up
+        </Button>
       </form>
       <div>
         <p className="mt-3 text-slate-500">
