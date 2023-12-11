@@ -40,6 +40,7 @@ export default function SignIn() {
         reset()
       },
       onError: (error) => {
+        console.log('🔥 ~ onSubmit ~ error:', error)
         if (isAxiosUnprocessableEntityError(error)) {
           const formError = error.response.data.errors
 
