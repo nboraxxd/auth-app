@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { twMerge } from 'tailwind-merge'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -11,11 +11,14 @@ import { AuthInput } from '@/components/AuthInput'
 import { Button } from '@/components/Button'
 
 export default function SignUp() {
+  const navigate = useNavigate()
+
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -32,6 +35,8 @@ export default function SignUp() {
     mutate(data, {
       onSuccess: (res) => {
         console.log('🔥 ~ onSubmit ~ onSuccess', res)
+        navigate(PATH.HOMEPAGE)
+        reset()
       },
       onError: (error) => {
         if (isAxiosUnprocessableEntityError(error)) {

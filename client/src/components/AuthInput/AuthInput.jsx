@@ -11,7 +11,7 @@ export default function AuthInput({ type = 'text', errorMessage, className, name
         })}
         {...rest}
       />
-      <p className="mt-0.5 min-h-[1.125rem] text-xs italic text-red-500">{errorMessage}</p>
+      <p className="mx-2 mt-0.5 min-h-[1.125rem] text-xs italic text-red-500">{errorMessage}</p>
     </>
   )
 }

@@ -11,6 +11,9 @@ function isAxiosError(error) {
 }
 
 export function isAxiosUnprocessableEntityError(error) {
-  console.log('🚲 isAxiosError', axios.isAxiosError(error))
   return isAxiosError(error) && error.response?.status === HttpStatusCode.UnprocessableEntity
+}
+
+export function isEmailNotFoundError(error) {
+  return isAxiosError(error) && error.response?.status === HttpStatusCode.NotFound
 }

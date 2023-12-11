@@ -31,3 +31,12 @@ export const signUpSchema = z
       path: ['confirm_password'],
     }
   )
+
+export const signInSchema = z.object({
+  email: z.string().email(USERNAME_MESSAGES.INVALID),
+
+  password: z
+    .string()
+    .regex(new RegExp('^.{6,86}$'), PASSWORD_MESSAGES.LENGTH)
+    .regex(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'), PASSWORD_MESSAGES.IS_STRONG),
+})

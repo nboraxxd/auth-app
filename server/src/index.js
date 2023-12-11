@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJsdoc from 'swagger-jsdoc'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 import { envConfig } from '@/constants/config'
 import authRouter from '@/routes/auth.route'
@@ -47,7 +48,15 @@ mongoose
 const app = express()
 
 // Quy định cors
-app.use(cors())
+app.use(
+  cors({
+    origin: true,
+    credentials: true, // cho phép client gởi cookie lên server
+  })
+)
+
+// parse cookie của client gởi lên, chuyển thành dạnh object để xử lý
+app.use(cookieParser())
 
 // parse json của client gởi lên, chuyển thành dạnh object để xử lý
 app.use(express.json())

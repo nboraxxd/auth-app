@@ -1,5 +1,6 @@
 import { TOKEN_TYPE } from '@/constants/common'
 import { envConfig } from '@/constants/config'
+import RefreshToken from '@/models/refreshToken.model'
 import { signToken, verifyToken } from '@/utils/jwt'
 
 const authService = {
@@ -25,6 +26,27 @@ const authService = {
 
   signAccessAndRefreshToken(user_id) {
     return Promise.all([authService.signAccessToken(user_id), authService.signRefreshToken(user_id)])
+  },
+
+  /**
+   * @param {*} user_id: ObjectId
+   * @returns {Promise<{access_token: string, refresh_token: string}>}
+   */
+  async handleAuth(user_id) {
+    const [access_token, refresh_token] = await authService.signAccessAndRefreshToken(user_id.toString())
+    const { iat, exp } = await authService.decodeRefreshToken(refresh_token)
+
+    await RefreshToken.create({
+      token: refresh_token,
+      user_id,
+      iat: new Date(iat * 1000),
+      exp: new Date(exp * 1000),
+    })
+
+    return {
+      access_token,
+      refresh_token,
+    }
   },
 }
 

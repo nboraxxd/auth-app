@@ -114,7 +114,8 @@ const userSchema = new mongoose.Schema(
           message: CONFIRM_PASSWORD_MESSAGES.IS_STRONG,
         },
         {
-          validator: (confirm_password) => {
+          // Bắt buộc dùng keyword function để truy cập this.password
+          validator: function (confirm_password) {
             return confirm_password === this.password
           },
           message: CONFIRM_PASSWORD_MESSAGES.DOES_NOT_MATCH,
