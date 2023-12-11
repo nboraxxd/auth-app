@@ -11,7 +11,8 @@ export const USERNAME_MESSAGES = {
 export const EMAIL_MESSAGES = {
   IS_REQUIRED: 'Email is required',
   MUST_BE_A_STRING: 'Email must be a string',
-  INVALID_EMAIL: 'Invalid email',
+  INVALID: 'Invalid email',
+  NOT_FOUND: 'Email not found',
 }
 
 export const PASSWORD_MESSAGES = {
@@ -31,4 +32,24 @@ export const CONFIRM_PASSWORD_MESSAGES = {
 
 export const SIGNUP_MESSAGES = {
   SUCCESS: 'Signup successfully',
+}
+
+export const USER_MESSAGES = {
+  ID_IS_REQUIRED: 'User id is required',
+  ID_INVALID: 'User id is invalid',
+}
+
+export const SIGNIN_MESSAGES = {
+  EMAIL_OR_PASSWORD_IS_INCORRECT: 'Email or password is incorrect',
+  SUCCESS: 'Signin successfully',
+}
+
+export const DATE_MESSAGES = {
+  IS_REQUIRED: 'Date is required',
+  INVALID: 'Invalid date',
+}
+
+export const REFRESH_TOKEN_MESSAGES = {
+  ID_IS_REQUIRED: 'Refresh token id is required',
+  INVALID: 'Refresh token is invalid',
 }

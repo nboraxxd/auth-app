@@ -1,7 +1,7 @@
 import { Router } from 'express'
 
-import { signupValidator } from '@/middlewares/auth.middlewares'
-import { signUpController } from '@/controllers/auth.controller'
+import { signinValidator, signupValidator } from '@/middlewares/auth.middlewares'
+import { signInController, signUpController } from '@/controllers/auth.controller'
 
 const authRouter = Router()
 
@@ -38,5 +38,41 @@ const authRouter = Router()
  *     description: Invalid value or missing field
  */
 authRouter.post('/sign-up', signupValidator, signUpController)
+
+/**
+ * @swagger
+ * /auth/sign-in:
+ *  post:
+ *   tags:
+ *    - auth
+ *   summary: Signin user
+ *   description: 'Signin user having email and password.'
+ *   operationId: sign-in
+ *   requestBody:
+ *    description: signin user object
+ *    required: true
+ *    content:
+ *     application/json:
+ *      schema:
+ *       $ref: '#/components/schemas/SigninReqBody'
+ *   responses:
+ *    '200':
+ *     description: Signin successfully
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         message:
+ *          type: string
+ *          example: Signin successfully
+ *         result:
+ *          $ref: '#/components/schemas/SuccessAuthentication'
+ *    '422':
+ *     description: Invalid value or missing field
+ *    '404':
+ *     description: Not found
+ */
+authRouter.post('/sign-in', signinValidator, signInController)
 
 export default authRouter

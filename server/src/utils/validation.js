@@ -4,7 +4,7 @@ import { validationResult } from 'express-validator'
 
 // sequential processing, stops running validations chain if the previous one fails.
 export function validate(validation) {
-  return async (req, res, next) => {
+  return async (req, _res, next) => {
     await validation.run(req)
 
     const errors = validationResult(req)

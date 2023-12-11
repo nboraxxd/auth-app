@@ -31,75 +31,103 @@
  *   SuccessAuthentication:
  *    type: object
  *    properties:
- *     access_token:
+ *     _id:
  *      type: string
- *      example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
- *     refresh_token:
+ *      example: 60f6f5e0a2c...
+ *     username:
  *      type: string
- *      example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *      example: atiiwo
+ *     email:
+ *      type: string
+ *      format: email
+ *      example: atiiwo@vuvu.om
+ *     createdAt:
+ *      type: string
+ *      format: ISO 8601
+ *      example: 2021-07-20T08:46:24.000Z
+ *     updatedAt:
+ *      type: string
+ *      format: ISO 8601
+ *      example: 2021-07-20T08:46:24.000Z
+ *     __v:
+ *      type: number
+ *      example: 0
  */
 
 import mongoose from 'mongoose'
-import isEmail from 'validator/lib/isemail'
-import isStrongPassword from 'validator/lib/isStrongPassword'
-import isLength from 'validator/lib/isLength'
+import validator from 'validator'
 import bcryptjs from 'bcryptjs'
+
+import { CONFIRM_PASSWORD_MESSAGES, EMAIL_MESSAGES, PASSWORD_MESSAGES, USERNAME_MESSAGES } from '@/constants/message'
+import { envConfig } from '@/constants/config'
 
 const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
       trim: true,
-      required: [true, 'Username is required'],
-      unique: [true, 'Username already exists'],
+      required: [true, USERNAME_MESSAGES.IS_REQUIRED],
+      unique: true,
     },
+
     email: {
       type: String,
       trim: true,
       lowercase: true,
-      required: [true, 'Username is required'],
-      unique: [true, 'Username already exists'],
-      validate: [isEmail, 'Email is invalid'],
+      required: [true, EMAIL_MESSAGES.IS_REQUIRED],
+      unique: true,
+      validate: [validator.isEmail, EMAIL_MESSAGES.INVALID],
     },
+
     password: {
       type: String,
-      required: [true, 'Password is required'],
+      required: [true, PASSWORD_MESSAGES.IS_REQUIRED],
       validate: [
         {
-          validator: (password) => isLength(password, { min: 6, max: 86 }),
-          message: 'Password must be between 6 and 86 characters',
+          validator: (password) => validator.isLength(password, { min: 6, max: 86 }),
+          message: PASSWORD_MESSAGES.LENGTH,
         },
         {
           validator: (password) =>
-            isStrongPassword(password, { minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 }),
-          message: 'Password must contain at least 1 lowercase, 1 uppercase, 1 number and 1 symbol',
+            validator.isStrongPassword(password, { minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 }),
+          message: PASSWORD_MESSAGES.IS_STRONG,
         },
       ],
     },
+
     confirm_password: {
       type: String,
-      required: [true, 'Confirm password is required'],
+      required: [true, CONFIRM_PASSWORD_MESSAGES.IS_REQUIRED],
       validate: [
         {
-          validator: (confirm_password) => isLength(confirm_password, { min: 6, max: 86 }),
-          message: 'Confirm password must be between 6 and 86 characters',
+          validator: (confirm_password) => validator.isLength(confirm_password, { min: 6, max: 86 }),
+          message: CONFIRM_PASSWORD_MESSAGES.LENGTH,
         },
         {
           validator: (confirm_password) =>
-            isStrongPassword(confirm_password, { minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 }),
-          message: 'Confirm password must contain at least 1 lowercase, 1 uppercase, 1 number and 1 symbol',
+            validator.isStrongPassword(confirm_password, {
+              minLowercase: 1,
+              minUppercase: 1,
+              minNumbers: 1,
+              minSymbols: 1,
+            }),
+          message: CONFIRM_PASSWORD_MESSAGES.IS_STRONG,
         },
         {
-          validator: function (confirm_password) {
+          validator: (confirm_password) => {
             return confirm_password === this.password
           },
-          message: 'Confirm password does not match with password',
+          message: CONFIRM_PASSWORD_MESSAGES.DOES_NOT_MATCH,
         },
       ],
     },
   },
   { timestamps: true }
 )
+
+userSchema.index({ username: 1 }, { unique: true })
+userSchema.index({ email: 1 }, { unique: true })
+userSchema.index({ email: 1, password: 1 })
 
 userSchema.pre('save', function (next) {
   if (!this.isModified('password')) return next()
@@ -109,5 +137,5 @@ userSchema.pre('save', function (next) {
   next()
 })
 
-const User = mongoose.model('user', userSchema)
+const User = mongoose.model(envConfig.dbUsersCollection, userSchema)
 export default User

@@ -10,7 +10,7 @@ export const signUpSchema = z
       .regex(new RegExp('^\\S*$'), USERNAME_MESSAGES.NOT_CONTAIN_SPACE)
       .regex(new RegExp('^[a-zA-Z0-9_]*$'), USERNAME_MESSAGES.NOT_CONTAIN_SPECIAL_CHARACTER),
 
-    email: z.string().email(USERNAME_MESSAGES.INVALID_EMAIL),
+    email: z.string().email(USERNAME_MESSAGES.INVALID),
 
     password: z
       .string()

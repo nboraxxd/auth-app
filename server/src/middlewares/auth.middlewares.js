@@ -1,7 +1,17 @@
 import { checkSchema } from 'express-validator'
+import bcryptjs from 'bcryptjs'
 
-import { CONFIRM_PASSWORD_MESSAGES, EMAIL_MESSAGES, PASSWORD_MESSAGES, USERNAME_MESSAGES } from '@/constants/message'
+import {
+  CONFIRM_PASSWORD_MESSAGES,
+  EMAIL_MESSAGES,
+  PASSWORD_MESSAGES,
+  SIGNIN_MESSAGES,
+  USERNAME_MESSAGES,
+} from '@/constants/message'
+import HTTP_STATUS from '@/constants/httpStatus'
 import { validate } from '@/utils/validation'
+import User from '@/models/auth.model'
+import { ErrorWithStatus } from '@/models/Errors'
 
 export const signupValidator = validate(
   checkSchema(
@@ -16,7 +26,7 @@ export const signupValidator = validate(
         notEmpty: { errorMessage: EMAIL_MESSAGES.IS_REQUIRED },
         isString: { errorMessage: EMAIL_MESSAGES.MUST_BE_A_STRING },
         trim: true,
-        isEmail: { errorMessage: EMAIL_MESSAGES.INVALID_EMAIL },
+        isEmail: { errorMessage: EMAIL_MESSAGES.INVALID },
       },
       password: {
         notEmpty: { errorMessage: PASSWORD_MESSAGES.IS_REQUIRED },
@@ -65,7 +75,20 @@ export const signinValidator = validate(
       notEmpty: { errorMessage: EMAIL_MESSAGES.IS_REQUIRED },
       isString: { errorMessage: EMAIL_MESSAGES.MUST_BE_A_STRING },
       trim: true,
-      isEmail: { errorMessage: EMAIL_MESSAGES.INVALID_EMAIL },
+      isEmail: { errorMessage: EMAIL_MESSAGES.INVALID },
+      custom: {
+        options: async (value, { req }) => {
+          const user = await User.findOne({ email: value })
+          if (user === null)
+            throw new ErrorWithStatus({ message: EMAIL_MESSAGES.NOT_FOUND, statusCode: HTTP_STATUS.NOT_FOUND })
+
+          const isMatchPassword = bcryptjs.compareSync(req.body.password, user.password)
+          if (!isMatchPassword) throw new Error(SIGNIN_MESSAGES.EMAIL_OR_PASSWORD_IS_INCORRECT)
+
+          req.user = user
+          return true
+        },
+      },
     },
     password: {
       notEmpty: { errorMessage: PASSWORD_MESSAGES.IS_REQUIRED },

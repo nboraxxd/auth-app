@@ -13,7 +13,7 @@ export const USERNAME_MESSAGES = {
 export const EMAIL_MESSAGES = {
   IS_REQUIRED: 'Email is required',
   MUST_BE_A_STRING: 'Email must be a string',
-  INVALID_EMAIL: 'Invalid email',
+  INVALID: 'Invalid email',
 }
 
 export const PASSWORD_MESSAGES = {
