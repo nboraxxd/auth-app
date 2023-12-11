@@ -2,16 +2,19 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { twMerge } from 'tailwind-merge'
+import { useDispatch } from 'react-redux'
 
 import { PATH } from '@/constants/path'
 import { isAxiosUnprocessableEntityError, isEmailNotFoundError } from '@/utils/common'
 import { signInSchema } from '@/lib/validation'
 import { useLogin } from '@/lib/tanstack-query/queriesAndMutations'
+import { setUser } from '@/lib/redux/auth/authSlice'
 import { AuthInput } from '@/components/AuthInput'
 import { Button } from '@/components/Button'
 
 export default function SignIn() {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const {
     register,
@@ -32,7 +35,7 @@ export default function SignIn() {
   function onSubmit(data) {
     mutate(data, {
       onSuccess: (res) => {
-        console.log('🔥 ~ onSubmit ~ res:', res)
+        dispatch(setUser(res.data.result))
         navigate(PATH.HOMEPAGE)
         reset()
       },

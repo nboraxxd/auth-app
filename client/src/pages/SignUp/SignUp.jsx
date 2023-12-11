@@ -3,15 +3,18 @@ import { useForm } from 'react-hook-form'
 import { twMerge } from 'tailwind-merge'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useSignup } from '@/lib/tanstack-query/queriesAndMutations'
+import { useDispatch } from 'react-redux'
 
 import { PATH } from '@/constants/path'
 import { isAxiosUnprocessableEntityError } from '@/utils/common'
 import { signUpSchema } from '@/lib/validation'
+import { setUser } from '@/lib/redux/auth/authSlice'
 import { AuthInput } from '@/components/AuthInput'
 import { Button } from '@/components/Button'
 
 export default function SignUp() {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const {
     register,
@@ -34,7 +37,7 @@ export default function SignUp() {
   function onSubmit(data) {
     mutate(data, {
       onSuccess: (res) => {
-        console.log('🔥 ~ onSubmit ~ onSuccess', res)
+        dispatch(setUser(res.data.result))
         navigate(PATH.HOMEPAGE)
         reset()
       },
