@@ -11,6 +11,7 @@ import { signUpSchema } from '@/lib/validation'
 import { setUser } from '@/lib/redux/auth/authSlice'
 import { AuthInput } from '@/components/AuthInput'
 import { Button } from '@/components/Button'
+import { OAuth } from '@/components/OAuth'
 
 export default function SignUp() {
   const navigate = useNavigate()
@@ -101,6 +102,7 @@ export default function SignUp() {
         <Button className="mt-1" isPending={isPending}>
           Sign up
         </Button>
+        <OAuth>Sign up with Google</OAuth>
       </form>
       <div>
         <p className="mt-3 text-slate-500">

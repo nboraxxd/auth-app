@@ -3,8 +3,9 @@ import { cn } from '@/utils/common'
 export default function Button({ children, className, isPending, ...rest }) {
   return (
     <button
+      disabled={isPending}
       className={cn(
-        'flex items-center justify-center rounded-lg bg-slate-700 p-3 font-semibold uppercase text-white transition-all disabled:cursor-not-allowed  disabled:opacity-60',
+        'flex min-h-[3rem] items-center justify-center rounded-lg bg-slate-700 p-3 font-semibold uppercase text-white transition-all  disabled:cursor-not-allowed disabled:opacity-60',
         className,
         {
           'cursor-not-allowed opacity-60': isPending,

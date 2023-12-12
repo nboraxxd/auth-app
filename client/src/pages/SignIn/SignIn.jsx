@@ -11,6 +11,7 @@ import { useLogin } from '@/lib/tanstack-query/queriesAndMutations'
 import { setUser } from '@/lib/redux/auth/authSlice'
 import { AuthInput } from '@/components/AuthInput'
 import { Button } from '@/components/Button'
+import { OAuth } from '@/components/OAuth'
 
 export default function SignIn() {
   const navigate = useNavigate()
@@ -91,6 +92,7 @@ export default function SignIn() {
         <Button className="mt-1" isPending={isPending}>
           Sign in
         </Button>
+        <OAuth>Sign in with Google</OAuth>
       </form>
       <div>
         <p className="mt-3 text-slate-500">

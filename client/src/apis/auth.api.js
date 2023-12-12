@@ -10,4 +10,8 @@ export const authApi = {
   signIn(body) {
     return http.post(`${AUTH_URL}/sign-in`, body)
   },
+
+  oAuth(body) {
+    return http.post(`${AUTH_URL}/oauth/google`, body)
+  },
 }

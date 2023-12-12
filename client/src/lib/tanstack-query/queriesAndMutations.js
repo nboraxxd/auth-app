@@ -8,3 +8,7 @@ export function useSignup() {
 export function useLogin() {
   return useMutation({ mutationFn: (user) => authApi.signIn(user) })
 }
+
+export function useOAuth() {
+  return useMutation({ mutationFn: (user) => authApi.oAuth(user) })
+}
