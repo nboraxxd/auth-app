@@ -1,14 +1,16 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { HttpStatusCode } from 'axios'
 import { useForm } from 'react-hook-form'
 import { twMerge } from 'tailwind-merge'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useSignup } from '@/lib/tanstack-query/queriesAndMutations'
 import { useDispatch } from 'react-redux'
+import { toast } from 'sonner'
 
 import { PATH } from '@/constants/path'
 import { isAxiosUnprocessableEntityError } from '@/utils/common'
 import { signUpSchema } from '@/lib/validation'
-import { setUser } from '@/lib/redux/auth/authSlice'
+import { setAuth } from '@/lib/redux/auth/authSlice'
 import { AuthInput } from '@/components/AuthInput'
 import { Button } from '@/components/Button'
 import { OAuth } from '@/components/OAuth'
@@ -38,24 +40,25 @@ export default function SignUp() {
   function onSubmit(data) {
     mutate(data, {
       onSuccess: (res) => {
-        dispatch(setUser(res.data.result))
+        dispatch(setAuth({ user: res.data.result, isAuthenticated: true }))
         navigate(PATH.HOMEPAGE)
         reset()
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntityError(error)) {
-          const formError = error.response.data.errors
-
-          if (formError) {
-            // Dùng Object.keys để lấy ra các key của formError object
-            // Sau đó dùng forEach để lặp qua từng key và set error cho input tương ứng
-            Object.keys(formError).forEach((key) => {
-              setError(key, {
-                message: formError[key].msg,
-                type: 'server',
-              })
+        const formError = error.response.data.errors
+        if (isAxiosUnprocessableEntityError(error) && formError) {
+          // Dùng Object.keys để lấy ra các key của formError object
+          // Sau đó dùng forEach để lặp qua từng key và set error cho input tương ứng
+          Object.keys(formError).forEach((key) => {
+            setError(key, {
+              message: formError[key].msg,
+              type: 'server',
             })
-          }
+          })
+        }
+
+        if (error.response.status === HttpStatusCode.InternalServerError) {
+          toast.error(error.response.data.message)
         }
       },
     })
@@ -102,7 +105,7 @@ export default function SignUp() {
         <Button className="mt-1" isPending={isPending}>
           Sign up
         </Button>
-        <OAuth>Sign up with Google</OAuth>
+        <OAuth />
       </form>
       <div>
         <p className="mt-3 text-slate-500">

@@ -9,6 +9,6 @@ export function useLogin() {
   return useMutation({ mutationFn: (user) => authApi.signIn(user) })
 }
 
-export function useOAuth() {
+export function useGoogleOAuth() {
   return useMutation({ mutationFn: (user) => authApi.oAuth(user) })
 }

@@ -30,6 +30,8 @@ export const signupValidator = validate(
             // do not contain special characters
             if (!username.match(/^[a-zA-Z0-9_]+$/))
               throw new Error(USERNAME_MESSAGES.MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
+
+            return true
           },
         },
       },

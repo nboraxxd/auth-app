@@ -49,6 +49,7 @@ export async function googleOAuthController(req, res, next) {
   const { name, email, photo_url } = req.body
 
   try {
+    // throw new Error('Google OAuth is not implemented yet')
     const user = await User.findOne({ email })
 
     if (user) {

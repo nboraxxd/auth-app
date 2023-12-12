@@ -12,6 +12,6 @@ export const authApi = {
   },
 
   oAuth(body) {
-    return http.post(`${AUTH_URL}/oauth/google`, body)
+    return http.post(`${AUTH_URL}/google`, body)
   },
 }
