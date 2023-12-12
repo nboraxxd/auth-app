@@ -25,7 +25,7 @@ export default function OAuth() {
       mutate(user, {
         onSuccess: (res) => {
           dispatch(setAuth({ user: res.data.result, isAuthenticated: true }))
-          navigate(PATH.HOMEPAGE)
+          navigate(PATH.PROFILE)
         },
         onError: (error) => {
           if (error.response.status === HttpStatusCode.InternalServerError) {

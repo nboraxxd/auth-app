@@ -1,9 +1,9 @@
-import { useState } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { PATH } from '@/constants/path'
 
 export default function AuthRoute() {
-  const [isLoggedIn] = useState(false)
+  const { isAuthenticated } = useSelector((state) => state.auth)
 
-  return isLoggedIn ? <Navigate to={PATH.PROFILE} replace /> : <Outlet />
+  return isAuthenticated ? <Navigate to={PATH.PROFILE} replace /> : <Outlet />
 }

@@ -41,7 +41,7 @@ export default function SignUp() {
     mutate(data, {
       onSuccess: (res) => {
         dispatch(setAuth({ user: res.data.result, isAuthenticated: true }))
-        navigate(PATH.HOMEPAGE)
+        navigate(PATH.PROFILE)
         reset()
       },
       onError: (error) => {
