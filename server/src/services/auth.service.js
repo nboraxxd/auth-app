@@ -1,7 +1,8 @@
 import { TOKEN_TYPE } from '@/constants/common'
 import { envConfig } from '@/constants/config'
-import RefreshToken from '@/models/refreshToken.model'
 import { signToken, verifyToken } from '@/utils/jwt'
+import User from '@/models/auth.model'
+import RefreshToken from '@/models/refreshToken.model'
 
 const authService = {
   signAccessToken(user_id) {
@@ -47,6 +48,17 @@ const authService = {
       access_token,
       refresh_token,
     }
+  },
+
+  createUser({ _id, username, email, password, confirm_password, photo_url }) {
+    return User.create({
+      _id,
+      username,
+      email,
+      password,
+      confirm_password,
+      photo_url,
+    })
   },
 }
 

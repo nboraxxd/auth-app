@@ -7,10 +7,10 @@
  *    properties:
  *     username:
  *      type: string
- *      example: atiiwo
+ *      example: bruce_wayne
  *     email:
  *      type: string
- *      example: atiiwo@vuvu.om
+ *      example: bruce@wayne.dc
  *     password:
  *      type: string
  *      example: Abcd12345@#
@@ -23,10 +23,24 @@
  *    properties:
  *     email:
  *      type: string
- *      example: atiiwo@vuvu.om
+ *      example: bruce@wayne.dc
  *     password:
  *      type: string
  *      example: Abcd12345@#
+ *
+ *   GoogleOAuthReqBody:
+ *    type: object
+ *    properties:
+ *     name:
+ *      type: string
+ *      example: Bruce Wayne
+ *     email:
+ *      type: string
+ *      example: bruce@wayne.dc
+ *     photo_url:
+ *      type: string
+ *      format: url
+ *      example: https://unsplash.com/photos/8BmNu...
  *
  *   SuccessAuthentication:
  *    type: object
@@ -36,11 +50,11 @@
  *      example: 60f6f5e0a2c...
  *     username:
  *      type: string
- *      example: atiiwo
+ *      example: bruce_
  *     email:
  *      type: string
  *      format: email
- *      example: atiiwo@vuvu.om
+ *      example: bruce@wayne.dc
  *     createdAt:
  *      type: string
  *      format: ISO 8601
@@ -58,7 +72,13 @@ import mongoose from 'mongoose'
 import validator from 'validator'
 import bcryptjs from 'bcryptjs'
 
-import { CONFIRM_PASSWORD_MESSAGES, EMAIL_MESSAGES, PASSWORD_MESSAGES, USERNAME_MESSAGES } from '@/constants/message'
+import {
+  CONFIRM_PASSWORD_MESSAGES,
+  EMAIL_MESSAGES,
+  PASSWORD_MESSAGES,
+  PHOTO_URL_MESSAGES,
+  USERNAME_MESSAGES,
+} from '@/constants/message'
 import { envConfig } from '@/constants/config'
 
 const userSchema = new mongoose.Schema(
@@ -68,6 +88,20 @@ const userSchema = new mongoose.Schema(
       trim: true,
       required: [true, USERNAME_MESSAGES.IS_REQUIRED],
       unique: true,
+      validate: [
+        {
+          validator: (username) => validator.isLength(username, { min: 3, max: 128 }),
+          message: USERNAME_MESSAGES.LENGTH,
+        },
+        {
+          validator: (username) => !username.includes(' '),
+          message: USERNAME_MESSAGES.MUST_NOT_CONTAIN_SPACE,
+        },
+        {
+          validator: (username) => username.match(/^[a-zA-Z0-9_]+$/),
+          message: USERNAME_MESSAGES.MUST_NOT_CONTAIN_SPECIAL_CHARACTERS,
+        },
+      ],
     },
 
     email: {
@@ -77,6 +111,12 @@ const userSchema = new mongoose.Schema(
       required: [true, EMAIL_MESSAGES.IS_REQUIRED],
       unique: true,
       validate: [validator.isEmail, EMAIL_MESSAGES.INVALID],
+    },
+
+    photo_url: {
+      type: String,
+      default: 'https://nownet.co.il/wp-content/uploads/2022/05/442008572_ARTIST_AVATAR_3D_400.gif',
+      validate: [validator.isURL, PHOTO_URL_MESSAGES.INVALID],
     },
 
     password: {
@@ -114,8 +154,8 @@ const userSchema = new mongoose.Schema(
           message: CONFIRM_PASSWORD_MESSAGES.IS_STRONG,
         },
         {
-          // Bắt buộc dùng keyword function để truy cập this.password
-          validator: function (confirm_password) {
+          // Bắt buộc dùng normal function để truy cập this.password
+          validator(confirm_password) {
             return confirm_password === this.password
           },
           message: CONFIRM_PASSWORD_MESSAGES.DOES_NOT_MATCH,

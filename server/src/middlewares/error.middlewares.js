@@ -9,7 +9,6 @@ export function defaultErrorHandler(err, _req, res, _next) {
   console.log('🍓 ERROR:', message)
 
   if (err.code === 11000) {
-    console.log(err)
     const field = Object.keys(err.keyValue)[0]
     const value = err.keyValue[field]
 

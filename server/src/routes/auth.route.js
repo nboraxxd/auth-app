@@ -1,7 +1,7 @@
 import { Router } from 'express'
 
-import { signinValidator, signupValidator } from '@/middlewares/auth.middlewares'
-import { signInController, signUpController } from '@/controllers/auth.controller'
+import { googleOAuthValidator, signinValidator, signupValidator } from '@/middlewares/auth.middlewares'
+import { googleOAuthController, signInController, signUpController } from '@/controllers/auth.controller'
 
 const authRouter = Router()
 
@@ -74,5 +74,39 @@ authRouter.post('/sign-up', signupValidator, signUpController)
  *     description: Not found
  */
 authRouter.post('/sign-in', signinValidator, signInController)
+
+/**
+ * @swagger
+ * /auth/google:
+ *  post:
+ *   tags:
+ *    - auth
+ *   summary: Authenticate with Google
+ *   description: 'Authenticate with Google method of Firebase.'
+ *   operationId: google
+ *   requestBody:
+ *    description: user object
+ *    required: true
+ *    content:
+ *     application/json:
+ *      schema:
+ *       $ref: '#/components/schemas/GoogleOAuthReqBody'
+ *   responses:
+ *    '200':
+ *     description: Authenticate with Google successfully
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         message:
+ *          type: string
+ *          example: Authenticate with Google successfully
+ *         result:
+ *          $ref: '#/components/schemas/SuccessAuthentication'
+ *    '422':
+ *     description: Invalid value or missing field
+ */
+authRouter.post('/google', googleOAuthValidator, googleOAuthController)
 
 export default authRouter

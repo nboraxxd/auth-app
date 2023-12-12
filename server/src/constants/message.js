@@ -2,10 +2,17 @@ export const VALIDATION_MESSAGES = {
   ERROR: 'Validation error',
 }
 
+export const NAME_MESSAGES = {
+  IS_REQUIRED: 'Name is required',
+  MUST_BE_A_STRING: 'Name must be a string',
+}
+
 export const USERNAME_MESSAGES = {
   IS_REQUIRED: 'Username is required',
   MUST_BE_A_STRING: 'Username must be a string',
-  LENGTH: 'Username must between 3 and 20 characters',
+  LENGTH: 'Username must between 3 and 128 characters',
+  MUST_NOT_CONTAIN_SPACE: 'Username must not contain space',
+  MUST_NOT_CONTAIN_SPECIAL_CHARACTERS: 'Username must not contain special characters',
 }
 
 export const EMAIL_MESSAGES = {
@@ -52,4 +59,14 @@ export const DATE_MESSAGES = {
 export const REFRESH_TOKEN_MESSAGES = {
   ID_IS_REQUIRED: 'Refresh token id is required',
   INVALID: 'Refresh token is invalid',
+}
+
+export const PHOTO_URL_MESSAGES = {
+  IS_REQUIRED: 'Photo url is required',
+  INVALID: 'Photo url is invalid',
+}
+
+export const GOOGLE_OAUTH_MESSAGES = {
+  SIGNIN_SUCCESSFULLY: 'Signin with google successfully',
+  SIGNUP_SUCCESSFULLY: 'Signup with google successfully',
 }

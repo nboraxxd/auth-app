@@ -6,7 +6,7 @@ export const signUpSchema = z
     username: z
       .string()
       .min(3, USERNAME_MESSAGES.LENGTH)
-      .max(20, USERNAME_MESSAGES.LENGTH)
+      .max(128, USERNAME_MESSAGES.LENGTH)
       .regex(new RegExp('^\\S*$'), USERNAME_MESSAGES.NOT_CONTAIN_SPACE)
       .regex(new RegExp('^[a-zA-Z0-9_]*$'), USERNAME_MESSAGES.NOT_CONTAIN_SPECIAL_CHARACTER),
 

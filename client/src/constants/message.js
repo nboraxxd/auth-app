@@ -7,7 +7,7 @@ export const USERNAME_MESSAGES = {
   MUST_BE_A_STRING: 'Username must be a string',
   NOT_CONTAIN_SPACE: 'Username must not contain space',
   NOT_CONTAIN_SPECIAL_CHARACTER: 'Username must not contain special character',
-  LENGTH: 'Username must between 3 and 20 characters',
+  LENGTH: 'Username must between 3 and 128 characters',
 }
 
 export const EMAIL_MESSAGES = {
