@@ -28,6 +28,7 @@
     "redux-persist": "^6.0.0",
     "sonner": "^1.2.4",
     "tailwind-merge": "^2.1.0",
+    "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {

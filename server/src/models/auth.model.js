@@ -115,7 +115,8 @@ const userSchema = new mongoose.Schema(
 
     photo_url: {
       type: String,
-      default: 'https://im5.ezgif.com/tmp/ezgif-5-66decd570f.gif',
+      default:
+        'https://firebasestorage.googleapis.com/v0/b/auth-app-e1d3d.appspot.com/o/images%2Fdefault-avatar.gif?alt=media&token=1e71d11e-9c77-4338-999e-486573bfdf5d',
       validate: [validator.isURL, PHOTO_URL_MESSAGES.INVALID],
     },
 

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { PATH } from '@/constants/path'
 import { useSelector } from 'react-redux'
+import { AvatarImage } from '../AvatarImage'
 
 export default function Header() {
   const { currentUser, isAuthenticated } = useSelector((state) => state.auth)
@@ -22,11 +23,7 @@ export default function Header() {
             <li>
               {isAuthenticated ? (
                 <Link to={PATH.PROFILE} className="flex items-center">
-                  <img
-                    src={currentUser.photo_url}
-                    alt={currentUser.username}
-                    className="h-9 w-9 rounded-full object-cover"
-                  />
+                  <AvatarImage src={currentUser.photo_url} alt={currentUser.username} w={9} h={9} />
                 </Link>
               ) : (
                 <Link to={PATH.SIGN_IN} className="inline-block p-1">

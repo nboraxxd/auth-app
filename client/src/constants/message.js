@@ -28,9 +28,15 @@ export const CONFIRM_PASSWORD_MESSAGES = {
   MUST_BE_A_STRING: 'Confirm password must be a string',
   LENGTH: 'Confirm password must between 6 and 86 characters',
   IS_STRONG: 'Confirm password must contain at least 1 lowercase, 1 uppercase, 1 number and 1 symbol',
-  DOES_NOT_MATCH: 'Confirm password does not match',
+  DOES_NOT_MATCH: 'Confirm password does not match password',
 }
 
 export const SIGNUP_MESSAGES = {
   SUCCESS: 'Signup successfully',
+}
+
+export const IMAGE_MESSAGES = {
+  MUST_BE_AN_IMAGE: 'File must be an image',
+  SIZE: 'Image size must be less than 2MB',
+  UPLOAD_FAILED: 'Upload image failed',
 }

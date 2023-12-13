@@ -40,3 +40,47 @@ export const signInSchema = z.object({
     .regex(new RegExp('^.{6,86}$'), PASSWORD_MESSAGES.LENGTH)
     .regex(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'), PASSWORD_MESSAGES.IS_STRONG),
 })
+
+export const profileSchema = z
+  .object({
+    username: z
+      .string()
+      .min(3, USERNAME_MESSAGES.LENGTH)
+      .max(128, USERNAME_MESSAGES.LENGTH)
+      .regex(new RegExp('^\\S*$'), USERNAME_MESSAGES.NOT_CONTAIN_SPACE)
+      .regex(new RegExp('^[a-zA-Z0-9_]*$'), USERNAME_MESSAGES.NOT_CONTAIN_SPECIAL_CHARACTER),
+
+    password: z
+      .string()
+      .regex(new RegExp('^.{6,86}$'), PASSWORD_MESSAGES.LENGTH)
+      .regex(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'), PASSWORD_MESSAGES.IS_STRONG)
+      .or(z.literal('')),
+
+    confirm_password: z
+      .string()
+      .regex(new RegExp('^.{6,86}$'), CONFIRM_PASSWORD_MESSAGES.LENGTH)
+      .regex(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'), CONFIRM_PASSWORD_MESSAGES.IS_STRONG)
+      .or(z.literal('')),
+  })
+  .refine(
+    (values) => {
+      if (values.password === '' && values.confirm_password !== '') {
+        return false
+      }
+      return true
+    },
+    {
+      message: PASSWORD_MESSAGES.IS_REQUIRED,
+      path: ['password'],
+    }
+  )
+
+  .refine(
+    (values) => {
+      return values.password === values.confirm_password
+    },
+    {
+      message: CONFIRM_PASSWORD_MESSAGES.DOES_NOT_MATCH,
+      path: ['confirm_password'],
+    }
+  )
