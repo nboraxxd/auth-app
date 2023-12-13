@@ -115,7 +115,7 @@ const userSchema = new mongoose.Schema(
 
     photo_url: {
       type: String,
-      default: 'https://nownet.co.il/wp-content/uploads/2022/05/442008572_ARTIST_AVATAR_3D_400.gif',
+      default: 'https://im5.ezgif.com/tmp/ezgif-5-66decd570f.gif',
       validate: [validator.isURL, PHOTO_URL_MESSAGES.INVALID],
     },
 

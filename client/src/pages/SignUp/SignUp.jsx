@@ -14,6 +14,7 @@ import { setAuth } from '@/lib/redux/auth/authSlice'
 import { AuthInput } from '@/components/AuthInput'
 import { Button } from '@/components/Button'
 import { OAuth } from '@/components/OAuth'
+import { Title } from '@/components/Title'
 
 export default function SignUp() {
   const navigate = useNavigate()
@@ -66,13 +67,12 @@ export default function SignUp() {
 
   return (
     <section className={twMerge('container max-w-lg')}>
-      <h1 className="my-7 text-center text-3xl font-semibold">Sign Up</h1>
+      <Title>Sign in</Title>
 
       <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)} noValidate>
         <AuthInput
           type="username"
           placeholder="Username"
-          autoComplete="username"
           name="username"
           register={register}
           errorMessage={errors.username?.message}
