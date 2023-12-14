@@ -23,7 +23,7 @@ export default function Header() {
             <li>
               {isAuthenticated ? (
                 <Link to={PATH.PROFILE} className="flex items-center">
-                  <AvatarImage src={currentUser.photo_url} alt={currentUser.username} w={9} h={9} />
+                  <AvatarImage src={currentUser.photo_url} alt={currentUser.username} className="h-9 w-9" />
                 </Link>
               ) : (
                 <Link to={PATH.SIGN_IN} className="inline-block p-1">

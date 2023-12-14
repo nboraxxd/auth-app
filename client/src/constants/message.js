@@ -37,6 +37,6 @@ export const SIGNUP_MESSAGES = {
 
 export const IMAGE_MESSAGES = {
   MUST_BE_AN_IMAGE: 'File must be an image',
-  SIZE: 'Image size must be less than 2MB',
+  MAX_SIZE: 'Image size must be less than 2MB',
   UPLOAD_FAILED: 'Upload image failed',
 }

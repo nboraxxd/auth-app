@@ -28,7 +28,6 @@ export default function Profile() {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(profileSchema),
@@ -79,7 +78,7 @@ export default function Profile() {
 
       <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)} autoComplete="off">
         <div className="relative mb-6 self-center">
-          <AvatarImage src={imagePreview || currentUser.photo_url} alt={currentUser.username} w={24} h={24} />
+          <AvatarImage src={imagePreview || currentUser.photo_url} alt={currentUser.username} className="h-24 w-24" />
           <AvatarInput setImage={setImage} isPending={uploadImageStatus === 'pending'} />
         </div>
 

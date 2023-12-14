@@ -1,10 +1,10 @@
-import { useRef } from 'react'
+import { memo, useRef } from 'react'
 import { toast } from 'sonner'
 
 import { IMAGE_MESSAGES } from '@/constants/message'
 import camera from '@/assets/images/camera.svg'
 
-export default function AvatarInput({ setImage, isPending }) {
+const AvatarInput = memo(function AvatarInput({ setImage, isPending }) {
   const MAX_SIZE_UPLOAD_AVATAR = 1024 * 1024 * 2 // 2MB
   const inputRef = useRef(null)
 
@@ -35,4 +35,6 @@ export default function AvatarInput({ setImage, isPending }) {
       </button>
     </>
   )
-}
+})
+
+export default AvatarInput

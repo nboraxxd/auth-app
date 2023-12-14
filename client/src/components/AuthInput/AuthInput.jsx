@@ -1,6 +1,7 @@
 import { cn } from '@/utils/common'
+import { memo } from 'react'
 
-export default function AuthInput({ type = 'text', errorMessage, className, name, register, ...rest }) {
+const AuthInput = memo(function AuthInput({ type = 'text', errorMessage, className, name, register, ...rest }) {
   const registerResult = register && name ? register(name) : null
 
   return (
@@ -16,4 +17,6 @@ export default function AuthInput({ type = 'text', errorMessage, className, name
       <p className="mx-2 mt-0.5 min-h-[1.125rem] text-xs italic text-red-500">{errorMessage}</p>
     </>
   )
-}
+})
+
+export default AuthInput
