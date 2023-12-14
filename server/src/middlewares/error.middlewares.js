@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import capitalize from 'lodash/capitalize'
 
 import HTTP_STATUS from '@/constants/httpStatus'
 import { VALIDATION_MESSAGES } from '@/constants/message'
@@ -16,7 +17,7 @@ export function defaultErrorHandler(err, _req, res, _next) {
       message: VALIDATION_MESSAGES.ERROR,
       errors: {
         [field]: {
-          msg: field.charAt(0).toUpperCase() + field.slice(1) + ' already exists',
+          msg: capitalize(field) + ' already exists',
           path: field,
           value,
         },

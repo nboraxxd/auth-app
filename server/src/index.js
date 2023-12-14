@@ -21,10 +21,11 @@ const options = {
     },
     components: {
       securitySchemes: {
-        BearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
+        cookieAuth: {
+          type: 'apiKey',
+          in: 'cookie',
+          name: 'access_token',
+          description: 'Access token',
         },
       },
     },

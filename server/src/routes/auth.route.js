@@ -1,7 +1,19 @@
 import { Router } from 'express'
 
-import { googleOAuthValidator, signinValidator, signupValidator } from '@/middlewares/auth.middlewares'
-import { googleOAuthController, signInController, signUpController } from '@/controllers/auth.controller'
+import {
+  accessTokenValidator,
+  googleOAuthValidator,
+  signinValidator,
+  signupValidator,
+  updateMeValidator,
+} from '@/middlewares/auth.middlewares'
+import { filterMiddleware } from '@/middlewares/common.middlewares'
+import {
+  googleOAuthController,
+  signInController,
+  signUpController,
+  updateMeController,
+} from '@/controllers/auth.controller'
 
 const authRouter = Router()
 
@@ -108,5 +120,49 @@ authRouter.post('/sign-in', signinValidator, signInController)
  *     description: Invalid value or missing field
  */
 authRouter.post('/google', googleOAuthValidator, googleOAuthController)
+
+/**
+ * @swagger
+ * /auth/me:
+ *  patch:
+ *   tags:
+ *    - auth
+ *   summary: Update my profile
+ *   description: 'Update my profile with username, password, confirm_password and photo_url.'
+ *   operationId: update-me
+ *   requestBody:
+ *    description: User object without email
+ *    required: true
+ *    content:
+ *     application/json:
+ *      schema:
+ *       $ref: '#/components/schemas/UpdateMeBody'
+ *   responses:
+ *    '200':
+ *     description: Update my profile successfully
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         message:
+ *          type: string
+ *          example: Update my profile successfully
+ *         result:
+ *          $ref: '#/components/schemas/SuccessAuthentication'
+ *    '422':
+ *     description: Invalid value or missing field
+ *    '401':
+ *     description: Invalid or expired access token
+ *    '404':
+ *     description: Not found
+ */
+authRouter.patch(
+  '/me',
+  accessTokenValidator,
+  updateMeValidator,
+  filterMiddleware(['username', 'password', 'confirm_password', 'photo_url']),
+  updateMeController
+)
 
 export default authRouter

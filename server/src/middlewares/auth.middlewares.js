@@ -1,5 +1,6 @@
 import { checkSchema } from 'express-validator'
 import bcryptjs from 'bcryptjs'
+import omit from 'lodash/omit'
 
 import {
   CONFIRM_PASSWORD_MESSAGES,
@@ -12,71 +13,94 @@ import {
 } from '@/constants/message'
 import HTTP_STATUS from '@/constants/httpStatus'
 import { validate } from '@/utils/validation'
+import { verifyAccessToken } from '@/utils/jwt'
 import User from '@/models/auth.model'
-import { ErrorWithStatus } from '@/models/Errors'
+import { ErrorWithStatus, RequiredFieldError } from '@/models/Errors'
+
+const usernameSchema = {
+  notEmpty: { errorMessage: USERNAME_MESSAGES.IS_REQUIRED },
+  isString: { errorMessage: USERNAME_MESSAGES.MUST_BE_A_STRING },
+  trim: true,
+  isLength: { options: { min: 3, max: 128 }, errorMessage: USERNAME_MESSAGES.LENGTH },
+  custom: {
+    options: (username) => {
+      // must not contain space
+      if (username.includes(' ')) throw new Error(USERNAME_MESSAGES.MUST_NOT_CONTAIN_SPACE)
+      // must not contain special characters
+      if (!username.match(/^[a-zA-Z0-9_]+$/)) throw new Error(USERNAME_MESSAGES.MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
+
+      return true
+    },
+  },
+}
+
+const emailSchema = {
+  notEmpty: { errorMessage: EMAIL_MESSAGES.IS_REQUIRED },
+  isString: { errorMessage: EMAIL_MESSAGES.MUST_BE_A_STRING },
+  trim: true,
+  isEmail: { errorMessage: EMAIL_MESSAGES.INVALID },
+}
+
+const passwordSchema = {
+  notEmpty: { errorMessage: PASSWORD_MESSAGES.IS_REQUIRED },
+  isString: { errorMessage: PASSWORD_MESSAGES.MUST_BE_A_STRING },
+  isLength: { options: { min: 6, max: 86 }, errorMessage: PASSWORD_MESSAGES.LENGTH },
+  isStrongPassword: {
+    options: {
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    },
+    errorMessage: PASSWORD_MESSAGES.IS_STRONG,
+  },
+}
+
+const confirmPasswordSchema = {
+  notEmpty: { errorMessage: CONFIRM_PASSWORD_MESSAGES.IS_REQUIRED },
+  isString: { errorMessage: CONFIRM_PASSWORD_MESSAGES.MUST_BE_A_STRING },
+  isLength: { options: { min: 6, max: 86 }, errorMessage: CONFIRM_PASSWORD_MESSAGES.LENGTH },
+  isStrongPassword: {
+    options: {
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    },
+    errorMessage: CONFIRM_PASSWORD_MESSAGES.IS_STRONG,
+  },
+  custom: {
+    options: (value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error(CONFIRM_PASSWORD_MESSAGES.DOES_NOT_MATCH)
+      }
+      return true
+    },
+  },
+}
+
+export const accessTokenValidator = validate(
+  checkSchema(
+    {
+      access_token: {
+        custom: {
+          options: async (value, { req }) => {
+            return await verifyAccessToken(value, req)
+          },
+        },
+      },
+    },
+    ['cookies']
+  )
+)
 
 export const signupValidator = validate(
   checkSchema(
     {
-      username: {
-        notEmpty: { errorMessage: USERNAME_MESSAGES.IS_REQUIRED },
-        isString: { errorMessage: USERNAME_MESSAGES.MUST_BE_A_STRING },
-        trim: true,
-        isLength: { options: { min: 3, max: 128 }, errorMessage: USERNAME_MESSAGES.LENGTH },
-        custom: {
-          options: (username) => {
-            // do not contain space
-            if (username.includes(' ')) throw new Error(USERNAME_MESSAGES.MUST_NOT_CONTAIN_SPACE)
-            // do not contain special characters
-            if (!username.match(/^[a-zA-Z0-9_]+$/))
-              throw new Error(USERNAME_MESSAGES.MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-
-            return true
-          },
-        },
-      },
-      email: {
-        notEmpty: { errorMessage: EMAIL_MESSAGES.IS_REQUIRED },
-        isString: { errorMessage: EMAIL_MESSAGES.MUST_BE_A_STRING },
-        trim: true,
-        isEmail: { errorMessage: EMAIL_MESSAGES.INVALID },
-      },
-      password: {
-        notEmpty: { errorMessage: PASSWORD_MESSAGES.IS_REQUIRED },
-        isString: { errorMessage: PASSWORD_MESSAGES.MUST_BE_A_STRING },
-        isLength: { options: { min: 6, max: 86 }, errorMessage: PASSWORD_MESSAGES.LENGTH },
-        isStrongPassword: {
-          options: {
-            minLowercase: 1,
-            minUppercase: 1,
-            minNumbers: 1,
-            minSymbols: 1,
-          },
-          errorMessage: PASSWORD_MESSAGES.IS_STRONG,
-        },
-      },
-      confirm_password: {
-        notEmpty: { errorMessage: CONFIRM_PASSWORD_MESSAGES.IS_REQUIRED },
-        isString: { errorMessage: CONFIRM_PASSWORD_MESSAGES.MUST_BE_A_STRING },
-        isLength: { options: { min: 6, max: 86 }, errorMessage: CONFIRM_PASSWORD_MESSAGES.LENGTH },
-        isStrongPassword: {
-          options: {
-            minLowercase: 1,
-            minUppercase: 1,
-            minNumbers: 1,
-            minSymbols: 1,
-          },
-          errorMessage: CONFIRM_PASSWORD_MESSAGES.IS_STRONG,
-        },
-        custom: {
-          options: (value, { req }) => {
-            if (value !== req.body.password) {
-              throw new Error(CONFIRM_PASSWORD_MESSAGES.DOES_NOT_MATCH)
-            }
-            return true
-          },
-        },
-      },
+      username: usernameSchema,
+      email: emailSchema,
+      password: passwordSchema,
+      confirm_password: confirmPasswordSchema,
     },
     ['body']
   )
@@ -86,10 +110,7 @@ export const signinValidator = validate(
   checkSchema(
     {
       email: {
-        notEmpty: { errorMessage: EMAIL_MESSAGES.IS_REQUIRED },
-        isString: { errorMessage: EMAIL_MESSAGES.MUST_BE_A_STRING },
-        trim: true,
-        isEmail: { errorMessage: EMAIL_MESSAGES.INVALID },
+        ...emailSchema,
         custom: {
           options: async (value, { req }) => {
             const user = await User.findOne({ email: value })
@@ -104,20 +125,7 @@ export const signinValidator = validate(
           },
         },
       },
-      password: {
-        notEmpty: { errorMessage: PASSWORD_MESSAGES.IS_REQUIRED },
-        isString: { errorMessage: PASSWORD_MESSAGES.MUST_BE_A_STRING },
-        isLength: { options: { min: 6, max: 86 }, errorMessage: PASSWORD_MESSAGES.LENGTH },
-        isStrongPassword: {
-          options: {
-            minLowercase: 1,
-            minUppercase: 1,
-            minNumbers: 1,
-            minSymbols: 1,
-          },
-          errorMessage: PASSWORD_MESSAGES.IS_STRONG,
-        },
-      },
+      password: passwordSchema,
     },
     ['body']
   )
@@ -130,12 +138,7 @@ export const googleOAuthValidator = validate(
         notEmpty: { errorMessage: NAME_MESSAGES.IS_REQUIRED },
         isString: { errorMessage: NAME_MESSAGES.MUST_BE_A_STRING },
       },
-      email: {
-        notEmpty: { errorMessage: EMAIL_MESSAGES.IS_REQUIRED },
-        isString: { errorMessage: EMAIL_MESSAGES.MUST_BE_A_STRING },
-        trim: true,
-        isEmail: { errorMessage: EMAIL_MESSAGES.INVALID },
-      },
+      email: emailSchema,
       photo_url: {
         notEmpty: { errorMessage: PHOTO_URL_MESSAGES.IS_REQUIRED },
         isURL: { errorMessage: PHOTO_URL_MESSAGES.INVALID },
@@ -143,4 +146,51 @@ export const googleOAuthValidator = validate(
     },
     ['body']
   )
+)
+
+export const updateMeValidator = validate(
+  checkSchema({
+    username: {
+      ...usernameSchema,
+      optional: true,
+    },
+
+    password: {
+      ...passwordSchema,
+      optional: true,
+      custom: {
+        options: (value, { req }) => {
+          if (value && !req.body.confirm_password) {
+            throw new RequiredFieldError({
+              message: CONFIRM_PASSWORD_MESSAGES.IS_REQUIRED,
+              fieldRequired: 'confirm_password',
+            })
+          }
+          return true
+        },
+      },
+    },
+
+    confirm_password: {
+      ...omit(confirmPasswordSchema, ['custom']),
+      optional: true,
+      custom: {
+        options: (value, { req }) => {
+          if (value && !req.body.password) {
+            throw new RequiredFieldError({ message: PASSWORD_MESSAGES.IS_REQUIRED, fieldRequired: 'password' })
+          }
+          if (value !== req.body.password) {
+            throw new Error(CONFIRM_PASSWORD_MESSAGES.DOES_NOT_MATCH)
+          }
+          return true
+        },
+      },
+    },
+
+    photo_url: {
+      notEmpty: { errorMessage: PHOTO_URL_MESSAGES.IS_REQUIRED },
+      isURL: { errorMessage: PHOTO_URL_MESSAGES.INVALID },
+      optional: true,
+    },
+  })
 )

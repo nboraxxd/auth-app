@@ -1,5 +1,5 @@
 import HTTP_STATUS from '@/constants/httpStatus'
-import { EntityError, ErrorWithStatus } from '@/models/Errors'
+import { EntityError, ErrorWithStatus, RequiredFieldError } from '@/models/Errors'
 import { validationResult } from 'express-validator'
 
 // sequential processing, stops running validations chain if the previous one fails.
@@ -21,6 +21,17 @@ export function validate(validation) {
 
       // Trả về lỗi không thuộc lỗi của quá trình validate
       if (msg instanceof ErrorWithStatus && msg.status !== HTTP_STATUS.UNPROCESSABLE_ENTITY) return next(msg)
+
+      // Trả lỗi khi thiếu field phụ thuộc
+      if (msg instanceof RequiredFieldError) {
+        entityError.errors[msg.fieldRequired] = {
+          msg: msg.message,
+          path: msg.fieldRequired,
+          type: 'custom',
+          location: errorObject[key].location,
+        }
+        continue
+      }
 
       entityError.errors[key] = errorObject[key]
     }

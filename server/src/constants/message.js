@@ -34,7 +34,7 @@ export const CONFIRM_PASSWORD_MESSAGES = {
   MUST_BE_A_STRING: 'Confirm password must be a string',
   LENGTH: 'Confirm password must between 6 and 86 characters',
   IS_STRONG: 'Confirm password must contain at least 1 lowercase, 1 uppercase, 1 number and 1 symbol',
-  DOES_NOT_MATCH: 'Confirm password does not match',
+  DOES_NOT_MATCH: 'Confirm password does not match with password',
 }
 
 export const SIGNUP_MESSAGES = {
@@ -42,6 +42,7 @@ export const SIGNUP_MESSAGES = {
 }
 
 export const USER_MESSAGES = {
+  NOT_FOUND: 'User not found',
   ID_IS_REQUIRED: 'User id is required',
   ID_INVALID: 'User id is invalid',
 }
@@ -54,6 +55,11 @@ export const SIGNIN_MESSAGES = {
 export const DATE_MESSAGES = {
   IS_REQUIRED: 'Date is required',
   INVALID: 'Invalid date',
+}
+
+export const ACCESS_TOKEN_MESSAGES = {
+  IS_REQUIRED: 'Access token is required',
+  INVALID: 'Access token is invalid',
 }
 
 export const REFRESH_TOKEN_MESSAGES = {
@@ -69,4 +75,8 @@ export const PHOTO_URL_MESSAGES = {
 export const GOOGLE_OAUTH_MESSAGES = {
   SIGNIN_SUCCESSFULLY: 'Signin with google successfully',
   SIGNUP_SUCCESSFULLY: 'Signup with google successfully',
+}
+
+export const UPDATE_ME_MESSAGES = {
+  SUCCESS: 'Update my profile successfully',
 }
