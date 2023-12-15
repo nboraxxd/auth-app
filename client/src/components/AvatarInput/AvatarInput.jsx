@@ -14,7 +14,7 @@ const AvatarInput = memo(function AvatarInput({ setImage, isPending }) {
     if (imageFromLocal && !imageFromLocal.type.includes('image')) {
       toast.error(IMAGE_MESSAGES.MUST_BE_AN_IMAGE)
     } else if (imageFromLocal && imageFromLocal.size >= MAX_SIZE_UPLOAD_AVATAR) {
-      toast.error(IMAGE_MESSAGES.SIZE)
+      toast.error(IMAGE_MESSAGES.MAX_SIZE)
     } else {
       setImage(imageFromLocal)
     }

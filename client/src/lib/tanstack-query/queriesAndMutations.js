@@ -12,3 +12,7 @@ export function useLogin() {
 export function useGoogleOAuth() {
   return useMutation({ mutationFn: (user) => authApi.oAuth(user) })
 }
+
+export function useUpdateMe() {
+  return useMutation({ mutationFn: (user) => authApi.updateMe(user) })
+}

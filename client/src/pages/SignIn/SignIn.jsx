@@ -1,13 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { HttpStatusCode } from 'axios'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { twMerge } from 'tailwind-merge'
 import { useDispatch } from 'react-redux'
-import { toast } from 'sonner'
 
 import { PATH } from '@/constants/path'
-import { isAxiosUnprocessableEntityError, isEmailNotFoundError } from '@/utils/common'
+import { handleInternalServerError, handleNotFoundError, handleUnauthorizedError } from '@/utils/error'
 import { signInSchema } from '@/lib/validation'
 import { useLogin } from '@/lib/tanstack-query/queriesAndMutations'
 import { setAuth } from '@/lib/redux/auth/authSlice'
@@ -44,28 +42,9 @@ export default function SignIn() {
         reset()
       },
       onError: (error) => {
-        const formError = error.response.data.errors
-        if (isAxiosUnprocessableEntityError(error) && formError) {
-          // Dùng Object.keys để lấy ra các key của formError object
-          // Sau đó dùng forEach để lặp qua từng key và set error cho input tương ứng
-          Object.keys(formError).forEach((key) => {
-            setError(key, {
-              message: formError[key].msg,
-              type: 'server',
-            })
-          })
-        }
-
-        if (isEmailNotFoundError(error)) {
-          setError('email', {
-            message: error.response.data.message,
-            type: 'server',
-          })
-        }
-
-        if (error.response.status === HttpStatusCode.InternalServerError) {
-          toast.error(error.response.data.message)
-        }
+        handleUnauthorizedError(error, setError)
+        handleNotFoundError(error, setError)
+        handleInternalServerError(error)
       },
     })
   }
