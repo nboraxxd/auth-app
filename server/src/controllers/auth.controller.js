@@ -6,13 +6,15 @@ import {
   GOOGLE_OAUTH_MESSAGES,
   REFRESH_TOKEN_MESSAGES,
   SIGNIN_MESSAGES,
+  SIGNOUT_MESSAGES,
   SIGNUP_MESSAGES,
   UPDATE_ME_MESSAGES,
   USER_MESSAGES,
 } from '@/constants/message'
+import authService from '@/services/auth.service'
 import User from '@/models/auth.model'
 import { ErrorWithStatus } from '@/models/Errors'
-import authService from '@/services/auth.service'
+import RefreshToken from '@/models/refreshToken.model'
 
 export async function signUpController(req, res, next) {
   const { username, email, password, confirm_password } = req.body
@@ -145,6 +147,22 @@ export const refreshTokenController = async (req, res, next) => {
     res.cookie('refresh_token', new_refresh_token, { httpOnly: true })
 
     res.json({ message: REFRESH_TOKEN_MESSAGES.SUCCESS })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const signOutController = async (req, res, next) => {
+  const { refresh_token } = req.cookies
+
+  try {
+    await RefreshToken.deleteOne({ token: refresh_token })
+
+    // Clear access_token and refresh_token cookies
+    res.clearCookie('access_token')
+    res.clearCookie('refresh_token')
+
+    res.json({ message: SIGNOUT_MESSAGES.SUCCESS })
   } catch (error) {
     next(error)
   }

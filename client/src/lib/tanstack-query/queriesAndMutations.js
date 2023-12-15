@@ -16,3 +16,7 @@ export function useGoogleOAuth() {
 export function useUpdateMe() {
   return useMutation({ mutationFn: (user) => authApi.updateMe(user) })
 }
+
+export function useSignOut() {
+  return useMutation({ mutationFn: () => authApi.signOut() })
+}

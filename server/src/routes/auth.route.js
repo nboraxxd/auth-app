@@ -13,6 +13,7 @@ import {
   googleOAuthController,
   refreshTokenController,
   signInController,
+  signOutController,
   signUpController,
   updateMeController,
 } from '@/controllers/auth.controller'
@@ -187,13 +188,38 @@ authRouter.patch(
  *         message:
  *          type: string
  *          example: Refresh token successfully
- *    '422':
- *     description: Invalid value or missing field
  *    '401':
- *     description: Invalid or expired access token
+ *     description: Invalid or expired token
  *    '404':
  *     description: Not found
  */
 authRouter.post('/refresh-token', refreshTokenValidator, refreshTokenController)
+
+/**
+ * @swagger
+ * /auth/sign-out:
+ *  post:
+ *   tags:
+ *    - auth
+ *   summary: Sign out
+ *   description: 'Sign out user.'
+ *   operationId: sign-out
+ *   responses:
+ *    '200':
+ *     description: Signout successfully
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         message:
+ *          type: string
+ *          example: Signout successfully
+ *    '401':
+ *     description: Invalid or expired token
+ *    '404':
+ *     description: Not found
+ */
+authRouter.post('/sign-out', accessTokenValidator, refreshTokenValidator, signOutController)
 
 export default authRouter

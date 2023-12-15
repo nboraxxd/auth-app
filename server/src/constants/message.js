@@ -82,3 +82,7 @@ export const GOOGLE_OAUTH_MESSAGES = {
 export const UPDATE_ME_MESSAGES = {
   SUCCESS: 'Update my profile successfully',
 }
+
+export const SIGNOUT_MESSAGES = {
+  SUCCESS: 'Signout successfully',
+}
