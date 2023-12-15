@@ -66,11 +66,11 @@ const authService = {
   },
 
   async refreshToken(refresh_token, decoded_refresh_token) {
-    const new_access_token = await authService.signAccessToken(decoded_refresh_token.user_id)
-    const new_refresh_token = await authService.signRefreshToken({
-      user_id: decoded_refresh_token.user_id,
-      exp: decoded_refresh_token.exp,
-    })
+    const [new_access_token, new_refresh_token] = await Promise.all([
+      authService.signAccessToken(decoded_refresh_token.user_id),
+      authService.signRefreshToken({ user_id: decoded_refresh_token.user_id, exp: decoded_refresh_token.exp }),
+      RefreshToken.deleteOne({ token: refresh_token }),
+    ])
 
     const { iat, exp } = await authService.decodeRefreshToken(new_refresh_token)
     await RefreshToken.create({
@@ -79,8 +79,6 @@ const authService = {
       iat: new Date(iat * 1000),
       exp: new Date(exp * 1000),
     })
-
-    await RefreshToken.deleteOne({ token: refresh_token })
 
     return { new_access_token, new_refresh_token }
   },

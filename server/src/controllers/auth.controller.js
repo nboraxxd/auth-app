@@ -136,11 +136,16 @@ export const updateMeController = async (req, res, next) => {
 export const refreshTokenController = async (req, res, next) => {
   const { decoded_refresh_token } = req
   const { refresh_token } = req.cookies
-  const { new_access_token, new_refresh_token } = await authService.refreshToken(refresh_token, decoded_refresh_token)
 
-  // Set access_token and refresh_token as cookies
-  res.cookie('access_token', new_access_token, { httpOnly: true })
-  res.cookie('refresh_token', new_refresh_token, { httpOnly: true })
+  try {
+    const { new_access_token, new_refresh_token } = await authService.refreshToken(refresh_token, decoded_refresh_token)
 
-  res.json({ message: REFRESH_TOKEN_MESSAGES.SUCCESS })
+    // Set access_token and refresh_token as cookies
+    res.cookie('access_token', new_access_token, { httpOnly: true })
+    res.cookie('refresh_token', new_refresh_token, { httpOnly: true })
+
+    res.json({ message: REFRESH_TOKEN_MESSAGES.SUCCESS })
+  } catch (error) {
+    next(error)
+  }
 }
