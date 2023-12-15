@@ -63,8 +63,10 @@ export const ACCESS_TOKEN_MESSAGES = {
 }
 
 export const REFRESH_TOKEN_MESSAGES = {
-  ID_IS_REQUIRED: 'Refresh token id is required',
+  IS_REQUIRED: 'Refresh token is required',
   INVALID: 'Refresh token is invalid',
+  NOT_FOUND: 'Refresh token not found',
+  SUCCESS: 'Refresh token successfully',
 }
 
 export const PHOTO_URL_MESSAGES = {

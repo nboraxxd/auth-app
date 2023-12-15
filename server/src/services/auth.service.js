@@ -1,3 +1,7 @@
+import { ObjectId } from 'mongodb'
+import omitBy from 'lodash/omitBy'
+import isUndefined from 'lodash/isUndefined'
+
 import { TOKEN_TYPE } from '@/constants/common'
 import { envConfig } from '@/constants/config'
 import { signToken, verifyToken } from '@/utils/jwt'
@@ -13,11 +17,11 @@ const authService = {
     })
   },
 
-  signRefreshToken(user_id) {
+  signRefreshToken({ user_id, exp }) {
     return signToken({
-      payload: { user_id, token_type: TOKEN_TYPE.REFRESH_TOKEN },
+      payload: omitBy({ user_id, exp, token_type: TOKEN_TYPE.REFRESH_TOKEN }, isUndefined),
       privateKey: envConfig.jwtSecretRefreshToken,
-      option: { expiresIn: envConfig.refreshTokenExpiresIn, algorithm: 'HS256' },
+      option: exp ? undefined : { expiresIn: envConfig.refreshTokenExpiresIn, algorithm: 'HS256' },
     })
   },
 
@@ -26,7 +30,7 @@ const authService = {
   },
 
   signAccessAndRefreshToken(user_id) {
-    return Promise.all([authService.signAccessToken(user_id), authService.signRefreshToken(user_id)])
+    return Promise.all([authService.signAccessToken(user_id), authService.signRefreshToken({ user_id })])
   },
 
   /**
@@ -59,6 +63,26 @@ const authService = {
       confirm_password,
       photo_url,
     })
+  },
+
+  async refreshToken(refresh_token, decoded_refresh_token) {
+    const new_access_token = await authService.signAccessToken(decoded_refresh_token.user_id)
+    const new_refresh_token = await authService.signRefreshToken({
+      user_id: decoded_refresh_token.user_id,
+      exp: decoded_refresh_token.exp,
+    })
+
+    const { iat, exp } = await authService.decodeRefreshToken(new_refresh_token)
+    await RefreshToken.create({
+      token: new_refresh_token,
+      user_id: new ObjectId(decoded_refresh_token.user_id),
+      iat: new Date(iat * 1000),
+      exp: new Date(exp * 1000),
+    })
+
+    await RefreshToken.deleteOne({ token: refresh_token })
+
+    return { new_access_token, new_refresh_token }
   },
 }
 

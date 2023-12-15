@@ -8,14 +8,19 @@ import {
   NAME_MESSAGES,
   PASSWORD_MESSAGES,
   PHOTO_URL_MESSAGES,
+  REFRESH_TOKEN_MESSAGES,
   SIGNIN_MESSAGES,
   USERNAME_MESSAGES,
 } from '@/constants/message'
 import HTTP_STATUS from '@/constants/httpStatus'
 import { validate } from '@/utils/validation'
-import { verifyAccessToken } from '@/utils/jwt'
+import { verifyAccessToken, verifyToken } from '@/utils/jwt'
 import User from '@/models/auth.model'
 import { ErrorWithStatus, RequiredFieldError } from '@/models/Errors'
+import { envConfig } from '@/constants/config'
+import RefreshToken from '@/models/refreshToken.model'
+import { JsonWebTokenError } from 'jsonwebtoken'
+import capitalize from 'lodash/capitalize'
 
 const usernameSchema = {
   notEmpty: { errorMessage: USERNAME_MESSAGES.IS_REQUIRED },
@@ -193,4 +198,50 @@ export const updateMeValidator = validate(
       optional: true,
     },
   })
+)
+
+export const refreshTokenValidator = validate(
+  checkSchema(
+    {
+      refresh_token: {
+        custom: {
+          options: async (value, { req }) => {
+            if (!value) {
+              throw new ErrorWithStatus({
+                message: REFRESH_TOKEN_MESSAGES.IS_REQUIRED,
+                statusCode: HTTP_STATUS.UNAUTHORIZED,
+              })
+            }
+
+            try {
+              const [decoded_refresh_token, refresh_token] = await Promise.all([
+                verifyToken({ token: value, secretOrPublicKey: envConfig.jwtSecretRefreshToken }),
+                RefreshToken.findOne({ token: value }),
+              ])
+
+              if (refresh_token === null) {
+                throw new ErrorWithStatus({
+                  message: REFRESH_TOKEN_MESSAGES.NOT_FOUND,
+                  statusCode: HTTP_STATUS.UNAUTHORIZED,
+                })
+              }
+
+              req.decoded_refresh_token = decoded_refresh_token
+            } catch (error) {
+              if (error instanceof JsonWebTokenError) {
+                throw new ErrorWithStatus({
+                  message: capitalize(error.message),
+                  statusCode: HTTP_STATUS.UNAUTHORIZED,
+                })
+              }
+              throw error
+            }
+
+            return true
+          },
+        },
+      },
+    },
+    ['cookies']
+  )
 )

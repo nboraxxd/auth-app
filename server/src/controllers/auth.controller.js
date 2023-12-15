@@ -4,6 +4,7 @@ import generator from 'generate-password'
 import HTTP_STATUS from '@/constants/httpStatus'
 import {
   GOOGLE_OAUTH_MESSAGES,
+  REFRESH_TOKEN_MESSAGES,
   SIGNIN_MESSAGES,
   SIGNUP_MESSAGES,
   UPDATE_ME_MESSAGES,
@@ -130,4 +131,16 @@ export const updateMeController = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
+}
+
+export const refreshTokenController = async (req, res, next) => {
+  const { decoded_refresh_token } = req
+  const { refresh_token } = req.cookies
+  const { new_access_token, new_refresh_token } = await authService.refreshToken(refresh_token, decoded_refresh_token)
+
+  // Set access_token and refresh_token as cookies
+  res.cookie('access_token', new_access_token, { httpOnly: true })
+  res.cookie('refresh_token', new_refresh_token, { httpOnly: true })
+
+  res.json({ message: REFRESH_TOKEN_MESSAGES.SUCCESS })
 }

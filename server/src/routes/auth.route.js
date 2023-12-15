@@ -3,6 +3,7 @@ import { Router } from 'express'
 import {
   accessTokenValidator,
   googleOAuthValidator,
+  refreshTokenValidator,
   signinValidator,
   signupValidator,
   updateMeValidator,
@@ -10,6 +11,7 @@ import {
 import { filterMiddleware } from '@/middlewares/common.middlewares'
 import {
   googleOAuthController,
+  refreshTokenController,
   signInController,
   signUpController,
   updateMeController,
@@ -164,5 +166,7 @@ authRouter.patch(
   filterMiddleware(['username', 'password', 'confirm_password', 'photo_url']),
   updateMeController
 )
+
+authRouter.post('/refresh-token', refreshTokenValidator, refreshTokenController)
 
 export default authRouter
