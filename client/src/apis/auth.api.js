@@ -1,6 +1,7 @@
 import { http } from '@/utils/http'
 
 const AUTH_URL = '/auth'
+export const API_REFRESH_TOKEN_URL = `${AUTH_URL}/refresh-token`
 
 export const authApi = {
   signUp(body) {
@@ -17,5 +18,9 @@ export const authApi = {
 
   updateMe(body) {
     return http.patch(`${AUTH_URL}/me`, body)
+  },
+
+  refreshToken() {
+    return http.post(`${AUTH_URL}/refresh-token`)
   },
 }

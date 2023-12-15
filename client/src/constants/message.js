@@ -40,3 +40,7 @@ export const IMAGE_MESSAGES = {
   MAX_SIZE: 'Image size must be less than 2MB',
   UPLOAD_FAILED: 'Upload image failed',
 }
+
+export const TOKEN_MESSAGES = {
+  EXPIRED: 'Jwt expired',
+}
