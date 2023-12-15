@@ -20,7 +20,7 @@ export function validate(validation) {
       const { msg } = errorObject[key]
 
       // Trả về lỗi không thuộc lỗi của quá trình validate
-      if (msg instanceof ErrorWithStatus && msg.status !== HTTP_STATUS.UNPROCESSABLE_ENTITY) return next(msg)
+      if (msg instanceof ErrorWithStatus && msg.statusCode !== HTTP_STATUS.UNPROCESSABLE_ENTITY) return next(msg)
 
       // Trả lỗi khi thiếu field phụ thuộc
       if (msg instanceof RequiredFieldError) {

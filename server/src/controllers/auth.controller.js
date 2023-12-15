@@ -10,15 +10,15 @@ import {
   USER_MESSAGES,
 } from '@/constants/message'
 import User from '@/models/auth.model'
-import authService from '@/services/auth.service'
 import { ErrorWithStatus } from '@/models/Errors'
+import authService from '@/services/auth.service'
 
 export async function signUpController(req, res, next) {
   const { username, email, password, confirm_password } = req.body
 
   try {
     const result = await authService.createUser({ username, email, password, confirm_password })
-    const { password: _pasword, ...rest } = result._doc
+    const { password: _password, ...rest } = result._doc
 
     const { access_token, refresh_token } = await authService.handleAuth(result._id)
 
@@ -37,7 +37,7 @@ export async function signUpController(req, res, next) {
 
 export async function signInController(req, res, next) {
   const { user } = req
-  const { password: _pasword, ...rest } = user._doc
+  const { password: _password, ...rest } = user._doc
 
   try {
     const { access_token, refresh_token } = await authService.handleAuth(user._id)
@@ -59,7 +59,7 @@ export async function googleOAuthController(req, res, next) {
     const user = await User.findOne({ email })
 
     if (user) {
-      const { password: _pasword, ...rest } = user._doc
+      const { password: _password, ...rest } = user._doc
       const { access_token, refresh_token } = await authService.handleAuth(user._id)
 
       // Set access_token and refresh_token as cookies
@@ -86,7 +86,7 @@ export async function googleOAuthController(req, res, next) {
         confirm_password: password,
         photo_url,
       })
-      const { password: _pasword, ...rest } = result._doc
+      const { password: _password, ...rest } = result._doc
       const { access_token, refresh_token } = await authService.handleAuth(result._id)
 
       // Set access_token and refresh_token as cookies
@@ -108,15 +108,24 @@ export const updateMeController = async (req, res, next) => {
   const { username, password, confirm_password, photo_url } = req.body
 
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      new ObjectId(decoded_access_token.user_id),
-      { $set: { username, password, confirm_password, photo_url } },
-      { new: true, runValidators: true }
-    )
+    const user = await User.findById(new ObjectId(decoded_access_token.user_id))
 
-    if (!updatedUser) throw new ErrorWithStatus({ message: USER_MESSAGES.NOT_FOUND, statusCode: HTTP_STATUS.NOT_FOUND })
+    if (!user) {
+      throw new ErrorWithStatus({ message: USER_MESSAGES.NOT_FOUND, statusCode: HTTP_STATUS.NOT_FOUND })
+    }
 
-    const { password: _pasword, ...rest } = updatedUser._doc
+    if (username) user.username = username
+    if (password) user.password = password
+    if (photo_url) user.photo_url = photo_url
+    if (!password && !confirm_password) {
+      user.confirm_password = user.password
+    } else {
+      user.confirm_password = confirm_password
+    }
+
+    const result = await user.save()
+    const { password: _password, ...rest } = result._doc
+
     res.json({ message: UPDATE_ME_MESSAGES.SUCCESS, result: rest })
   } catch (error) {
     next(error)

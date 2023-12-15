@@ -190,35 +190,11 @@ userSchema.index({ email: 1 }, { unique: true })
 userSchema.index({ email: 1, password: 1 })
 
 userSchema.pre('save', function (next) {
+  this.confirm_password = undefined
+
   if (!this.isModified('password')) return next()
 
   this.password = bcryptjs.hashSync(this.password, 10)
-  this.confirm_password = undefined
-  next()
-})
-
-userSchema.pre('findOneAndUpdate', function (next) {
-  const update = this.getUpdate()
-
-  if (!update.$set.password && !update.$set.confirm_password) return next()
-
-  if (
-    (update.$set.password && !update.$set.confirm_password) ||
-    (!update.$set.password && update.$set.confirm_password)
-  ) {
-    const path = update.$set.password ? 'confirm_password' : 'password'
-
-    const error = new mongoose.Error.ValidationError(this)
-    error.errors[path] = new mongoose.Error.ValidatorError({
-      message: update.$set.password ? CONFIRM_PASSWORD_MESSAGES.IS_REQUIRED : PASSWORD_MESSAGES.IS_REQUIRED,
-      path,
-    })
-
-    return next(error)
-  }
-
-  update.$set.password = bcryptjs.hashSync(update.$set.password, 10)
-  update.$set.confirm_password = undefined
   next()
 })
 
