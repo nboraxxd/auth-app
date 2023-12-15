@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb'
 import { checkSchema } from 'express-validator'
 import bcryptjs from 'bcryptjs'
 import omit from 'lodash/omit'
@@ -11,6 +12,7 @@ import {
   REFRESH_TOKEN_MESSAGES,
   SIGNIN_MESSAGES,
   USERNAME_MESSAGES,
+  USER_MESSAGES,
 } from '@/constants/message'
 import HTTP_STATUS from '@/constants/httpStatus'
 import { validate } from '@/utils/validation'
@@ -222,6 +224,14 @@ export const refreshTokenValidator = validate(
               if (refresh_token === null) {
                 throw new ErrorWithStatus({
                   message: REFRESH_TOKEN_MESSAGES.NOT_FOUND,
+                  statusCode: HTTP_STATUS.UNAUTHORIZED,
+                })
+              }
+
+              const user = await User.findById(new ObjectId(decoded_refresh_token.user_id))
+              if (user === null) {
+                throw new ErrorWithStatus({
+                  message: USER_MESSAGES.NOT_FOUND,
                   statusCode: HTTP_STATUS.UNAUTHORIZED,
                 })
               }

@@ -167,6 +167,33 @@ authRouter.patch(
   updateMeController
 )
 
+/**
+ * @swagger
+ * /auth/refresh-token:
+ *  post:
+ *   tags:
+ *    - auth
+ *   summary: Refresh token
+ *   description: 'Refresh token when access token is expired.'
+ *   operationId: refresh-token
+ *   responses:
+ *    '200':
+ *     description: Refresh token successfully
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         message:
+ *          type: string
+ *          example: Refresh token successfully
+ *    '422':
+ *     description: Invalid value or missing field
+ *    '401':
+ *     description: Invalid or expired access token
+ *    '404':
+ *     description: Not found
+ */
 authRouter.post('/refresh-token', refreshTokenValidator, refreshTokenController)
 
 export default authRouter
