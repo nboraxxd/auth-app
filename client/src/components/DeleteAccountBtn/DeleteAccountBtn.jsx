@@ -1,15 +1,15 @@
 import { useDispatch } from 'react-redux'
 import { toast } from 'sonner'
 
-import { useSignOut } from '@/lib/tanstack-query/queriesAndMutations'
+import { useDeleteAccount } from '@/lib/tanstack-query/queriesAndMutations'
 import { setAuth } from '@/lib/redux/auth/authSlice'
 import { cn } from '@/utils/common'
 
-export default function SignOutBtn() {
+export default function DeleteAccountBtn() {
   const dispatch = useDispatch()
-  const { isPending, mutate } = useSignOut()
+  const { isPending, mutate } = useDeleteAccount()
 
-  function handleSignOut() {
+  function handleDelAccount() {
     mutate(null, {
       onSuccess: (res) => {
         toast.success(res.data.message)
@@ -24,13 +24,13 @@ export default function SignOutBtn() {
   return (
     <button
       className={cn(
-        'p-1 text-slate-500 transition-all disabled:text-slate-300',
-        !isPending && 'hover:text-slate-700 hover:underline'
+        'p-1 text-red-500 transition-all disabled:text-red-300',
+        !isPending && 'hover:text-red-700 hover:underline'
       )}
       disabled={isPending}
-      onClick={handleSignOut}
+      onClick={handleDelAccount}
     >
-      Sign out
+      Delete account
     </button>
   )
 }

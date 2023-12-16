@@ -3,13 +3,12 @@ import generator from 'generate-password'
 
 import HTTP_STATUS from '@/constants/httpStatus'
 import {
-  GET_ME_MESSAGES,
+  ME_MESSAGES,
   GOOGLE_OAUTH_MESSAGES,
   REFRESH_TOKEN_MESSAGES,
   SIGNIN_MESSAGES,
   SIGNOUT_MESSAGES,
   SIGNUP_MESSAGES,
-  UPDATE_ME_MESSAGES,
   USER_MESSAGES,
 } from '@/constants/message'
 import authService from '@/services/auth.service'
@@ -117,7 +116,7 @@ export const getMeController = async (req, res, next) => {
     }
 
     const { password: _password, ...rest } = user._doc
-    return res.json({ message: GET_ME_MESSAGES.SUCCESS, result: rest })
+    return res.json({ message: ME_MESSAGES.GET_SUCCESS, result: rest })
   } catch (error) {
     next(error)
   }
@@ -146,7 +145,7 @@ export const updateMeController = async (req, res, next) => {
     const result = await user.save()
     const { password: _password, ...rest } = result._doc
 
-    res.json({ message: UPDATE_ME_MESSAGES.SUCCESS, result: rest })
+    res.json({ message: ME_MESSAGES.UPDATE_SUCCESS, result: rest })
   } catch (error) {
     next(error)
   }
@@ -180,6 +179,26 @@ export const signOutController = async (req, res, next) => {
     res.clearCookie('refresh_token')
 
     res.json({ message: SIGNOUT_MESSAGES.SUCCESS })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const deleteMeController = async (req, res, next) => {
+  const { refresh_token } = req.cookies
+  const { decoded_access_token } = req
+
+  try {
+    await Promise.all([
+      RefreshToken.deleteOne({ token: refresh_token }),
+      User.deleteOne({ _id: new ObjectId(decoded_access_token.user_id) }),
+    ])
+
+    // Clear access_token and refresh_token cookies
+    res.clearCookie('access_token')
+    res.clearCookie('refresh_token')
+
+    res.json({ message: ME_MESSAGES.DELETE_SUCCESS })
   } catch (error) {
     next(error)
   }

@@ -44,3 +44,8 @@ export const IMAGE_MESSAGES = {
 export const TOKEN_MESSAGES = {
   EXPIRED: 'Jwt expired',
 }
+
+export const ME_MESSAGES = {
+  UPDATE_SUCCESS: 'Update profile successfully',
+  DELETE_SUCCESS: 'Delete account successfully',
+}

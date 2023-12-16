@@ -31,4 +31,8 @@ export const authApi = {
   signOut() {
     return http.post(`${AUTH_URL}/sign-out`)
   },
+
+  delteMe() {
+    return http.delete(`${AUTH_URL}/me`)
+  },
 }

@@ -10,6 +10,7 @@ import {
 } from '@/middlewares/auth.middlewares'
 import { filterMiddleware } from '@/middlewares/common.middlewares'
 import {
+  deleteMeController,
   getMeController,
   googleOAuthController,
   refreshTokenController,
@@ -251,5 +252,32 @@ authRouter.post('/refresh-token', refreshTokenValidator, refreshTokenController)
  *     description: Not found
  */
 authRouter.post('/sign-out', accessTokenValidator, refreshTokenValidator, signOutController)
+
+/**
+ * @swagger
+ * /auth/me:
+ *  delete:
+ *   tags:
+ *    - auth
+ *   summary: Delete my profile
+ *   description: 'Delete my profile with access token and refresh token.'
+ *   operationId: delete-me
+ *   responses:
+ *    '200':
+ *     description: Delete my profile successfully
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         message:
+ *          type: string
+ *          example: Delete my profile successfully
+ *    '401':
+ *     description: Invalid or expired token
+ *    '404':
+ *     description: Not found
+ */
+authRouter.delete('/me', accessTokenValidator, refreshTokenValidator, deleteMeController)
 
 export default authRouter

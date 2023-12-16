@@ -19,7 +19,7 @@ import { Button } from '@/components/Button'
 import { AvatarImage } from '@/components/AvatarImage'
 import { AvatarInput } from '@/components/AvatarInput'
 import { SignOutBtn } from '@/components/SignOutBtn'
-import { DeleteUserBtn } from '@/components/DeleteUserBtn'
+import { DeleteAccountBtn } from '@/components/DeleteAccountBtn'
 
 export default function Profile() {
   const [image, setImage] = useState(null)
@@ -163,7 +163,7 @@ export default function Profile() {
 
       <div className="mt-4 flex justify-between">
         <SignOutBtn />
-        <DeleteUserBtn />
+        <DeleteAccountBtn />
       </div>
     </section>
   )

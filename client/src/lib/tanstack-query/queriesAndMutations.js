@@ -34,3 +34,7 @@ export function useUpdateMe() {
 export function useSignOut() {
   return useMutation({ mutationFn: () => authApi.signOut() })
 }
+
+export function useDeleteAccount() {
+  return useMutation({ mutationFn: () => authApi.delteMe() })
+}
