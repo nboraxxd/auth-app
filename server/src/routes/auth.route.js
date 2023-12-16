@@ -10,6 +10,7 @@ import {
 } from '@/middlewares/auth.middlewares'
 import { filterMiddleware } from '@/middlewares/common.middlewares'
 import {
+  getMeController,
   googleOAuthController,
   refreshTokenController,
   signInController,
@@ -123,6 +124,35 @@ authRouter.post('/sign-in', signinValidator, signInController)
  *     description: Invalid value or missing field
  */
 authRouter.post('/google', googleOAuthValidator, googleOAuthController)
+
+/**
+ * @swagger
+ * /auth/me:
+ *  get:
+ *   tags:
+ *    - auth
+ *   summary: Get my profile
+ *   description: 'Get my profile.'
+ *   operationId: get-me
+ *   responses:
+ *    '200':
+ *     description: Get my profile successfully
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         message:
+ *          type: string
+ *          example: Get my profile successfully
+ *         result:
+ *          $ref: '#/components/schemas/SuccessAuthentication'
+ *    '422':
+ *     description: Invalid value or missing field
+ *    '404':
+ *     description: Not found
+ */
+authRouter.get('/me', accessTokenValidator, getMeController)
 
 /**
  * @swagger

@@ -79,6 +79,10 @@ export const GOOGLE_OAUTH_MESSAGES = {
   SIGNUP_SUCCESSFULLY: 'Signup with google successfully',
 }
 
+export const GET_ME_MESSAGES = {
+  SUCCESS: 'Get my profile successfully',
+}
+
 export const UPDATE_ME_MESSAGES = {
   SUCCESS: 'Update my profile successfully',
 }

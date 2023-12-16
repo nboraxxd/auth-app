@@ -73,6 +73,10 @@
  *      type: string
  *      format: email
  *      example: bruce@wayne.dc
+ *     photo_url:
+ *      type: string
+ *      format: url
+ *      example: https://unsplash.com/photos/8BmNu...
  *     createdAt:
  *      type: string
  *      format: ISO 8601

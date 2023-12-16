@@ -16,6 +16,10 @@ export const authApi = {
     return http.post(`${AUTH_URL}/google`, body)
   },
 
+  getMe() {
+    return http.get(`${AUTH_URL}/me`)
+  },
+
   updateMe(body) {
     return http.patch(`${AUTH_URL}/me`, body)
   },

@@ -3,6 +3,7 @@ import generator from 'generate-password'
 
 import HTTP_STATUS from '@/constants/httpStatus'
 import {
+  GET_ME_MESSAGES,
   GOOGLE_OAUTH_MESSAGES,
   REFRESH_TOKEN_MESSAGES,
   SIGNIN_MESSAGES,
@@ -101,6 +102,22 @@ export async function googleOAuthController(req, res, next) {
         result: { ...rest, new_user: true },
       })
     }
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getMeController = async (req, res, next) => {
+  const { decoded_access_token } = req
+  try {
+    const user = await User.findById(new ObjectId(decoded_access_token.user_id))
+
+    if (!user) {
+      throw new ErrorWithStatus({ message: USER_MESSAGES.NOT_FOUND, statusCode: HTTP_STATUS.NOT_FOUND })
+    }
+
+    const { password: _password, ...rest } = user._doc
+    return res.json({ message: GET_ME_MESSAGES.SUCCESS, result: rest })
   } catch (error) {
     next(error)
   }

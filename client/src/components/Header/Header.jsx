@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
-import { PATH } from '@/constants/path'
 import { useSelector } from 'react-redux'
-import { AvatarImage } from '../AvatarImage'
+
+import { PATH } from '@/constants/path'
+import { AvatarImage } from '@/components/AvatarImage'
 
 export default function Header() {
   const { currentUser, isAuthenticated } = useSelector((state) => state.auth)
