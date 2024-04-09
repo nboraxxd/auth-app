@@ -9,7 +9,7 @@ const refreshTokenSchema = new mongoose.Schema(
   {
     token: {
       type: String,
-      required: [true, REFRESH_TOKEN_MESSAGES.ID_IS_REQUIRED],
+      required: [true, REFRESH_TOKEN_MESSAGES.IS_REQUIRED],
       unique: true,
       validate: {
         validator: (token) => isJWT(token),

@@ -259,12 +259,12 @@ authRouter.post('/sign-out', accessTokenValidator, refreshTokenValidator, signOu
  *  delete:
  *   tags:
  *    - auth
- *   summary: Delete my profile
- *   description: 'Delete my profile with access token and refresh token.'
+ *   summary: Delete account
+ *   description: 'Delete account with access token and refresh token.'
  *   operationId: delete-me
  *   responses:
  *    '200':
- *     description: Delete my profile successfully
+ *     description: Delete account successfully
  *     content:
  *      application/json:
  *       schema:
@@ -272,7 +272,7 @@ authRouter.post('/sign-out', accessTokenValidator, refreshTokenValidator, signOu
  *        properties:
  *         message:
  *          type: string
- *          example: Delete my profile successfully
+ *          example: Delete account successfully
  *    '401':
  *     description: Invalid or expired token
  *    '404':
